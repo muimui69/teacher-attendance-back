@@ -32,7 +32,7 @@ public class MateriaController {
             }
         }
         return new ResponseEntity<>(
-                new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Materia not found", null),
+                new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Materia not found","hubo un error"),
                 HttpStatus.NOT_FOUND);
     }
 

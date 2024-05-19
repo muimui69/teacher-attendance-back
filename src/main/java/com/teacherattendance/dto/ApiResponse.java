@@ -4,11 +4,18 @@ public class ApiResponse<T> {
     private int statusCode;
     private String message;
     private T data;
+    private String error;
 
     public ApiResponse(int statusCode, String message, T data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
+    }
+
+    public ApiResponse(int statusCode, String message, String error) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.error = error;
     }
 
     public int getStatusCode() {
@@ -33,5 +40,13 @@ public class ApiResponse<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
