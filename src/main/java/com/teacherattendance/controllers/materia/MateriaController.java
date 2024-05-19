@@ -1,6 +1,6 @@
 package com.teacherattendance.controllers.materia;
 
-import com.teacherattendance.dto.ApiResponse;
+import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.dto.materia.MateriaDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class MateriaController {
             }
         }
         return new ResponseEntity<>(
-                new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Materia not found","hubo un error"),
+                new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Materia not found",null),
                 HttpStatus.NOT_FOUND);
     }
 
