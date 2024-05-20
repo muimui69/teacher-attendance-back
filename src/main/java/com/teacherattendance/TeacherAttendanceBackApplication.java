@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import com.teacherattendance.config.WebConfig;
 
+
 @SpringBootApplication
 @Import(WebConfig.class)
 public class TeacherAttendanceBackApplication {
@@ -15,3 +16,5 @@ public class TeacherAttendanceBackApplication {
 	}
 
 }
+
+
