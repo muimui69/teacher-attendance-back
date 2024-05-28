@@ -59,5 +59,4 @@ public class ModalidadController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-
 }
