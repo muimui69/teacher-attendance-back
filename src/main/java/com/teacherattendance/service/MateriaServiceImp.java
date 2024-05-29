@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.teacherattendance.dto.error.ResourceNotFoundException;
-import com.teacherattendance.dto.materia.MateriaDTO;
+import com.teacherattendance.dto.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.repository.MateriaRepository;
 
