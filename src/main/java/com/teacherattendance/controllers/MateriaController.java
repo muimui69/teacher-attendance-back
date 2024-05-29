@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.teacherattendance.dto.materia.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.service.MateriaServiceImp;
 
@@ -30,8 +32,8 @@ public class MateriaController {
 	}
 	
 	@PostMapping("/materia")
-	public Materia guardarMateria(@RequestBody Materia materia) {
-		return service.guardarMateria(materia);
+	public Materia guardarMateria(@RequestBody MateriaDTO materiaDTO) {
+		return service.guardarMateria(materiaDTO);
 	}
 
 	@GetMapping("/materia/{id}")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.AsistenciaDto;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Asistencia;
 import com.teacherattendance.repository.AsistenciaRepository;
@@ -21,7 +22,10 @@ public class AsistenciaServiceImp {
 		return (List<Asistencia>) repositorio.findAll();
 	}
 	
-	public Asistencia guardarAsistencia(Asistencia asistencia) {
+	public Asistencia guardarAsistencia(AsistenciaDto asistenciaDto) {
+		Asistencia asistencia = new Asistencia(asistenciaDto.getId(), asistenciaDto.getEstado(), 
+				asistenciaDto.getEntrada(), asistenciaDto.getSalida(), asistenciaDto.getToleranciaMinutos(), 
+				asistenciaDto.getHorasAtraso(), asistenciaDto.getDocente());
 		return repositorio.save(asistencia);
 	}
 	

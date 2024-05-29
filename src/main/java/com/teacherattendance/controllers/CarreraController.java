@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.teacherattendance.dto.CarreraDTO;
 import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.service.CarreraServiceImp;
 
@@ -30,8 +32,8 @@ public class CarreraController {
 	}
 	
 	@PostMapping("/carrera")
-	public Carrera guardarCarrera(@RequestBody Carrera carrera) {
-		return service.guardarCarrera(carrera);
+	public Carrera guardarCarrera(@RequestBody CarreraDTO carreraDTO) {
+		return service.guardarCarrera(carreraDTO);
 	}
 
 	@GetMapping("/carrera/{id}")

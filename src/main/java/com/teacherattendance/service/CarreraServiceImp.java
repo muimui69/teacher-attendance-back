@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.CarreraDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.repository.CarreraRepository;
@@ -21,7 +22,8 @@ public class CarreraServiceImp {
 		return (List<Carrera>) repositorio.findAll();
 	}
 	
-	public Carrera guardarCarrera(Carrera carrera) {
+	public Carrera guardarCarrera(CarreraDTO carreraDTO) {
+		Carrera carrera = new Carrera(carreraDTO.getId(), carreraDTO.getNombre());
 		return repositorio.save(carrera);
 	}
 	

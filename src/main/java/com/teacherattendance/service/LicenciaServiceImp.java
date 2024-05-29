@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.LicenciaDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Licencia;
 import com.teacherattendance.repository.LicenciaRepository;
@@ -21,7 +22,9 @@ public class LicenciaServiceImp {
 		return (List<Licencia>) repositorio.findAll();
 	}
 	
-	public Licencia guardarLicencia(Licencia licencia) {
+	public Licencia guardarLicencia(LicenciaDTO licenciaDTO) {
+		Licencia licencia = new Licencia(licenciaDTO.getId(), licenciaDTO.getTitulo(),
+				licenciaDTO.getDescripcion(), licenciaDTO.getDocente(), licenciaDTO.getFecha());
 		return repositorio.save(licencia);
 	}
 	

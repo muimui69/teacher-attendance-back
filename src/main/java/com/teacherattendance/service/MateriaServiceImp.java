@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.teacherattendance.dto.error.ResourceNotFoundException;
+import com.teacherattendance.dto.materia.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.repository.MateriaRepository;
 
@@ -21,7 +22,9 @@ public class MateriaServiceImp {
 		return (List<Materia>) repositorio.findAll();
 	}
 	
-	public Materia guardarMateria(Materia materia) {
+	public Materia guardarMateria(MateriaDTO materiaDTO) {
+		Materia materia = new Materia(materiaDTO.getId(), materiaDTO.getNombre(),
+				materiaDTO.getSigla(), materiaDTO.getCarrera());  
 		return repositorio.save(materia);
 	}
 	

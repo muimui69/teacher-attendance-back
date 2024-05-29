@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.AulaDto;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.repository.AulaRepository;
@@ -21,7 +22,8 @@ public class AulaServiceImp {
 		return (List<Aula>) repositorio.findAll();
 	}
 	
-	public Aula guardarAula(Aula aula) {
+	public Aula guardarAula(AulaDto aulaDto) {
+		Aula aula = new Aula(aulaDto.getId(), aulaDto.getNombre(), aulaDto.getModulo());
 		return repositorio.save(aula);
 	}
 	

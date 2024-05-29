@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.teacherattendance.dto.AsistenciaDto;
 import com.teacherattendance.entity.Asistencia;
+import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.service.AsistenciaServiceImp;
+import com.teacherattendance.service.UserServiceImp;
 
 @RestController
 @CrossOrigin(origins = "")
@@ -24,13 +28,17 @@ public class AsistenciaController {
 	@Autowired
 	private AsistenciaServiceImp service;
 	
+	@Autowired 
+	UserServiceImp userService;
+	
 	@GetMapping("/asistencia")
 	public List<Asistencia> listarAsistencia() {
 		return service.findAll();
 	}
 	
 	@PostMapping("/asistencia")
-	public Asistencia guardarAsistencia(@RequestBody Asistencia asistencia) {
+	public Asistencia guardarAsistencia(@RequestBody AsistenciaDto asistencia) {
+		List<Usuarios> user = userService.listUser();
 		return service.guardarAsistencia(asistencia);
 	}
 
