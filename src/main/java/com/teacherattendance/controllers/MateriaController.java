@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teacherattendance.dto.materia.MateriaDTO;
+import com.teacherattendance.dto.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.service.MateriaServiceImp;
 

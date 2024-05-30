@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class UserController {
 
-    private final UserService adminService;
-    private final ModelMapper modelMapper;
-
-    @Autowired
-    public UserController(UserService adminService, ModelMapper modelMapper) {
-        this.adminService = adminService;
-        this.modelMapper = modelMapper;
-    }
+//    private final UserService adminService;
+//    private final ModelMapper modelMapper;
+//
+//    @Autowired
+//    public UserController(UserService adminService, ModelMapper modelMapper) {
+//        this.adminService = adminService;
+//        this.modelMapper = modelMapper;
+//    }
 
 //    @GetMapping
 //    public ResponseEntity<List<AdminDTO>> getAllAdmins() {
@@ -50,12 +50,12 @@ public class UserController {
 //        return new ResponseEntity<>(createdAdminDto, HttpStatus.CREATED);
 //    }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> updateAdmin(@PathVariable("id") Long id, @Valid @RequestBody UserDTO adminDto) {
-        Usuarios patchAdmin = adminService.patchAdmin(id, adminDto);
-        UserDTO patchAdminDto = modelMapper.map(patchAdmin, UserDTO.class);
-        return new ResponseEntity<>(patchAdminDto, HttpStatus.OK);
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<UserDTO> updateAdmin(@PathVariable("id") Long id, @Valid @RequestBody UserDTO adminDto) {
+//        Usuarios patchAdmin = adminService.patchAdmin(id, adminDto);
+//        UserDTO patchAdminDto = modelMapper.map(patchAdmin, UserDTO.class);
+//        return new ResponseEntity<>(patchAdminDto, HttpStatus.OK);
+//    }
 
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Void> deleteAdmin(@PathVariable("id") Long id) {

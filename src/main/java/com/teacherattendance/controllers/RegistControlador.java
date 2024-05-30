@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RegistControlador {
-	
-	@GetMapping
-	public String IniciarSecion() {
-		return "login";
-	}
-
-	@PostMapping
-	public String IniciarSecionIndex() {
-		return "redirect:/";
-	}
+//	
+//	@GetMapping
+//	public String IniciarSecion() {
+//		return "login";
+//	}
+//
+//	@PostMapping
+//	public String IniciarSecionIndex() {
+//		return "redirect:/";
+//	}
 	
 }
