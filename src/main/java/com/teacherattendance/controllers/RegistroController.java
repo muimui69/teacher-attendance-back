@@ -15,7 +15,7 @@ import com.teacherattendance.service.UserServiceImp;
 
 @RestController
 @RequestMapping("/si2")
-//@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"http://localhost:4200"})
 public class RegistroController {
 	
 	@Autowired
