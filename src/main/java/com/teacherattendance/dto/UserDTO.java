@@ -16,7 +16,7 @@ public class UserDTO  {
 
     private Long id;
 
-    @NotEmpty(message = "ingrese un name")
+    @NotEmpty(message = "ingrese un nombre")
     private String nombre;
 
     @NotEmpty(message = "ingrese un apellido")

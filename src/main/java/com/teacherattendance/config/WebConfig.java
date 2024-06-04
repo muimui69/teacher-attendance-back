@@ -16,12 +16,12 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.addPathPrefix("/api", c -> true);
     }
 
-    @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry){
-        registry.addMapping("/*")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+//    @Override
+//    public void addCorsMappings(@NonNull CorsRegistry registry){
+//        registry.addMapping("/*")
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+//                .allowedHeaders("*")
+//                .allowCredentials(true);
+//    }
 }
