@@ -32,12 +32,17 @@ public class LicenciaServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Licencia actualizarLicencia(Licencia licencia) {
+	public Licencia actualizarLicencia(Long id, LicenciaDTO licenciaDTO) {
+		Licencia licencia = obtenerLicencia(id);
+		licencia.setTitulo(licenciaDTO.getTitulo());
+		licencia.setDescripcion(licenciaDTO.getDescripcion());
+		licencia.setDocente(licenciaDTO.getDocente());
+		licencia.setFecha(licenciaDTO.getFecha());
 		return repositorio.save(licencia);
 	}
 	
-	public void eliminarLicencia(Licencia licencia) {
-		repositorio.delete(licencia);
+	public void eliminarLicencia(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

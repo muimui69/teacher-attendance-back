@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class PeriodoDTO {
 
     private Long id;
+    
+	private int gestion;
+	
+	private String nombre;
 
 	private LocalDate fecha_inicio;
 
 	private LocalDate fecha_fin;
-	
-	private int gestion;
-	
-	private String nombre;
 	
 }

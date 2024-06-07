@@ -27,6 +27,10 @@ public class Periodo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+	private int gestion;
+	
+	private String nombre;
+    
 	@DateTimeFormat(iso = ISO.DATE)
 	@Past
 	@NotNull(message = "Debe ingresar la feha de inicio")
@@ -36,9 +40,5 @@ public class Periodo {
 	@Past
 	@NotNull(message = "Debe ingresar la feha del fin")
 	private LocalDate fecha_fin;
-	
-	private int gestion;
-	
-	private String nombre;
 
 }

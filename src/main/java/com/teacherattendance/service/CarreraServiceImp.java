@@ -31,12 +31,14 @@ public class CarreraServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Carrera actualizarCarrera(Carrera carrera) {
+	public Carrera actualizarCarrera(Long id, CarreraDTO carreraDTO) {
+		Carrera carrera = obtenerCarrera(id);
+		carrera.setNombre(carreraDTO.getNombre());
 		return repositorio.save(carrera);
 	}
 	
-	public void eliminarCarrera(Carrera carrera) {
-		repositorio.delete(carrera);
+	public void eliminarCarrera(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

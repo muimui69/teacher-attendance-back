@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.teacherattendance.dto.AulaDto;
+import com.teacherattendance.dto.AulaDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.repository.AulaRepository;
@@ -17,12 +16,11 @@ public class AulaServiceImp {
 	@Autowired
 	private AulaRepository repositorio;
 	
-	@Transactional(readOnly = true)
 	public List<Aula> findAll(){
-		return (List<Aula>) repositorio.findAll();
+		return repositorio.findAll();
 	}
 	
-	public Aula guardarAula(AulaDto aulaDto) {
+	public Aula guardarAula(AulaDTO aulaDto) {
 		Aula aula = new Aula(aulaDto.getId(), aulaDto.getNombre(), aulaDto.getModulo());
 		return repositorio.save(aula);
 	}
@@ -31,12 +29,15 @@ public class AulaServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Aula actualizarAula(Aula aula) {
+	public Aula actualizarAula(Long id,AulaDTO aulaDTO) {
+		Aula aula = obtenerAulaPorId(id);
+		aula.setModulo(aulaDTO.getModulo());
+		aula.setNombre(aulaDTO.getNombre());
 		return repositorio.save(aula);
 	}
 	
-	public void eliminarAula(Aula aula) {
-		repositorio.delete(aula);
+	public void eliminarAula(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

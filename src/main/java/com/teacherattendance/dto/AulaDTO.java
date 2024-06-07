@@ -1,6 +1,8 @@
 package com.teacherattendance.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.teacherattendance.entity.Modulo;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ModalidadDTO {
+public class AulaDTO {
 	
     private Long id;
 	
-	private String nombre;
+	private int nombre;
 	
-	private String descripcion;
-
+	private Modulo modulo;
+	
 
 }

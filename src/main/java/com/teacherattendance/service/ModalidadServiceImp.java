@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.ModalidadDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Modalidad;
 import com.teacherattendance.repository.ModalidadRepository;
@@ -18,10 +19,11 @@ public class ModalidadServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Modalidad> findAll(){
-		return (List<Modalidad>) repositorio.findAll();
+		return repositorio.findAll();
 	}
 	
-	public Modalidad guardarModalidad(Modalidad modalidad) {
+	public Modalidad guardarModalidad(ModalidadDTO modalidadDTO) {
+		Modalidad modalidad = new Modalidad(modalidadDTO.getId(), modalidadDTO.getNombre(), modalidadDTO.getDescripcion());
 		return repositorio.save(modalidad);
 	}
 	
@@ -29,12 +31,15 @@ public class ModalidadServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Modalidad actualizarModalidad(Modalidad modalidad) {
+	public Modalidad actualizarModalidad(Long id, ModalidadDTO modalidadDTO) {
+		Modalidad modalidad = obtenerModalidad(id);
+		modalidad.setNombre(modalidadDTO.getNombre());
+		modalidad.setDescripcion(modalidadDTO.getDescripcion());
 		return repositorio.save(modalidad);
 	}
 	
-	public void eliminarModalidad(Modalidad modalidad) {
-		repositorio.delete(modalidad);
+	public void eliminarModalidad(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

@@ -19,7 +19,7 @@ public class MateriaServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Materia> findAll(){
-		return (List<Materia>) repositorio.findAll();
+		return repositorio.findAll();
 	}
 	
 	public Materia guardarMateria(MateriaDTO materiaDTO) {
@@ -32,12 +32,16 @@ public class MateriaServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Materia actualizarMateria(Materia materia) {
+	public Materia actualizarMateria(Long id, MateriaDTO materiaDTO) {
+		Materia materia = obtenerMateria(id);
+		materia.setNombre(materiaDTO.getNombre());
+		materia.setSigla(materiaDTO.getSigla());
+		materia.setCarrera(materiaDTO.getCarrera());
 		return repositorio.save(materia);
 	}
 	
-	public void eliminarMateria(Materia materia) {
-		repositorio.delete(materia);
+	public void eliminarMateria(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

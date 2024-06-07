@@ -1,10 +1,11 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,50 +14,53 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.teacherattendance.dto.ModalidadDTO;
 import com.teacherattendance.entity.Modalidad;
 import com.teacherattendance.service.ModalidadServiceImp;
 
 @RestController
-@CrossOrigin(origins = "")
+@RequestMapping("/Modalidad")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ModalidadController {
 	
 	@Autowired
 	private ModalidadServiceImp service;
 	
-	@GetMapping("/modalidad")
-	public List<Modalidad> listarModalidad() {
-		return service.findAll();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@GetMapping
+	public ResponseEntity<List<ModalidadDTO>> listarModalidad() {
+		List<Modalidad> modalidads = service.findAll();
+		List<ModalidadDTO> modalidadDTOs = modalidads.stream()
+				.map(modalidad -> modelMapper.map(modalidads, ModalidadDTO.class)).collect(Collectors.toList());
+		return new ResponseEntity<>(modalidadDTOs, HttpStatus.OK);
 	}
 	
-	@PostMapping("/modalidad")
-	public Modalidad guardarModalidad(@RequestBody Modalidad modalidad) {
-		return service.guardarModalidad(modalidad);
+	@PostMapping
+	public ResponseEntity<Modalidad> guardarModalidad(@RequestBody ModalidadDTO modalidadDTO) {
+		return new ResponseEntity<>(service.guardarModalidad(modalidadDTO), HttpStatus.OK);
 	}
 
-	@GetMapping("/modalidad/{id}")
-	public ResponseEntity<Modalidad> obtenerModalidad(@PathVariable Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<ModalidadDTO> obtenerModalidad(@PathVariable Long id) {
 		Modalidad modalidad =  service.obtenerModalidad(id);
-		return ResponseEntity.ok(modalidad);
+		ModalidadDTO modalidadDTO = modelMapper.map(modalidad, ModalidadDTO.class);
+		return ResponseEntity.ok(modalidadDTO);
 	}
 
-	@PutMapping("/modalidad/{id}")
-	public ResponseEntity<Modalidad> actualizarModalidad(@PathVariable Long id,@RequestBody Modalidad detalleModalidad) {
-		Modalidad modalidad =  service.obtenerModalidad(id);
-		modalidad.setId(detalleModalidad.getId()); 
-		modalidad.setNombre(detalleModalidad.getNombre());
-		modalidad.setDescripcion(detalleModalidad.getDescripcion());
-		Modalidad modalidadActualizado = service.actualizarModalidad(modalidad);
-		return ResponseEntity.ok(modalidadActualizado); 
+	@PutMapping("/{id}")
+	public ResponseEntity<Modalidad> actualizarModalidad(@PathVariable Long id,@RequestBody ModalidadDTO modalidadDTO) {
+		return new ResponseEntity<>(service.actualizarModalidad(id, modalidadDTO), HttpStatus.OK); 
 	}
 
-	@DeleteMapping("/modalidad/{id}")
-	public ResponseEntity<Map<String, Boolean>>eliminarModalidad(@PathVariable Long id) {
-		Modalidad modalidad =  service.obtenerModalidad(id);
-		service.eliminarModalidad(modalidad);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> eliminarModalidad(@PathVariable Long id) {
+		service.eliminarModalidad(id);
+		return ResponseEntity.noContent().build();
 	}
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teacherattendance.dto.PeriodoDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Periodo;
 import com.teacherattendance.repository.PeriodoRepository;
@@ -18,10 +19,12 @@ public class PeriodoServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Periodo> findAll(){
-		return (List<Periodo>) repositorio.findAll();
+		return repositorio.findAll();
 	}
 	
-	public Periodo guardarPeriodo(Periodo periodo) {
+	public Periodo guardarPeriodo(PeriodoDTO periodoDTO) {
+		Periodo periodo = new Periodo(periodoDTO.getId(), periodoDTO.getGestion(), periodoDTO.getNombre(), 
+				periodoDTO.getFecha_inicio(), periodoDTO.getFecha_fin());
 		return repositorio.save(periodo);
 	}
 	
@@ -29,12 +32,17 @@ public class PeriodoServiceImp {
 		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
-	public Periodo actualizarPeriodo(Periodo periodo) {
+	public Periodo actualizarPeriodo(Long id, PeriodoDTO periodoDTO) {
+		Periodo periodo = obtenerPeriodo(id);
+		periodo.setGestion(periodoDTO.getGestion());
+		periodo.setNombre(periodoDTO.getNombre());
+		periodo.setFecha_inicio(periodoDTO.getFecha_inicio());
+		periodo.setFecha_fin(periodoDTO.getFecha_fin());
 		return repositorio.save(periodo);
 	}
 	
-	public void eliminarPeriodo(Periodo periodo) {
-		repositorio.delete(periodo);
+	public void eliminarPeriodo(Long id) {
+		repositorio.deleteById(id);
 	}
 
 }

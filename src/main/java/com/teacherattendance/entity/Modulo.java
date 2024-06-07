@@ -22,8 +22,8 @@ public class Modulo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private String ubicacion;
-    
     private int numero;
+    
+    private String ubicacion;
 
 }

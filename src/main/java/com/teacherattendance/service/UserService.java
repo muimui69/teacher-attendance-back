@@ -9,17 +9,21 @@ import java.util.List;
 
 public interface UserService {
 
-	public List<Usuarios> listUser();
+	public List<UserDTO> listUser();
+	
+	public List<Usuarios> listUsuarios();
 
     public Long getUserById(String name);
+    
+    public Usuarios obtenerUserPorId(Long id);
 
     public AuthResponse createUser(UserDTO adminDto);
     
     public AuthResponse createUserAdmin(UserDTO adminDto);
 
-    public Usuarios patchAdmin(Long id, UserDTO adminDto);
+    public Usuarios updateAdmin(Long id, UserDTO adminDto);
     
     public AuthResponse login(LoginRequest loginRequest);
 
-//    void deleteAdmin(Long id);
+    public void deleteUser(Long id);
 }

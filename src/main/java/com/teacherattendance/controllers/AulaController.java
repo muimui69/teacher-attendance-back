@@ -1,76 +1,68 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.teacherattendance.dto.AulaDto;
+import com.teacherattendance.dto.AulaDTO;
 import com.teacherattendance.entity.Aula;
-import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.service.AulaServiceImp;
-import com.teacherattendance.service.ModuloServiceImp;
-
-import jakarta.validation.ValidationException;
 
 @RestController
-@CrossOrigin(origins = "")
+@RequestMapping("/Aula")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AulaController {
 	
 	@Autowired
 	private AulaServiceImp service;
 	
 	@Autowired
-	private ModuloServiceImp moduloService;
+	private ModelMapper modelMapper;
 	
-	@GetMapping("/aula")
-	public List<Aula> listarAula() {
-		return service.findAll();
+	@GetMapping
+	public ResponseEntity<List<AulaDTO>> listarAula() {
+		List<Aula> aula = service.findAll();
+		List<AulaDTO> aulaDTO = aula.stream()
+				.map(aulas -> modelMapper.map(aula, AulaDTO.class)).collect(Collectors.toList());
+		return new ResponseEntity<>(aulaDTO, HttpStatus.OK);
 	}
 	
-	@PostMapping("/aula")
-	public Aula guardarAula(@Validated @RequestBody AulaDto aulaDto) throws Exception{
-		List<Modulo> modulo = moduloService.findAll();
+	@PostMapping
+	public Aula guardarAula(@Validated @RequestBody AulaDTO aulaDto) throws Exception{
 		return service.guardarAula(aulaDto); 
 	}
 
-	@GetMapping("/aula/{id}")
-	public ResponseEntity<Aula> obtenerAula(@PathVariable Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<AulaDTO> obtenerAula(@PathVariable Long id) {
 		Aula aula =  service.obtenerAulaPorId(id);
-		return ResponseEntity.ok(aula);
+		AulaDTO aulaDTO = modelMapper.map(aula, AulaDTO.class);
+		return ResponseEntity.ok(aulaDTO);
 	}
 
-	@PutMapping("/aula/{id}")
-	public ResponseEntity<Aula> actualizarAula(@PathVariable Long id,@RequestBody Aula detalleAula) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		aula.setId(detalleAula.getId()); 
-		aula.setModulo(detalleAula.getModulo());
-		aula.setNombre(detalleAula.getNombre());
-		Aula aulaActualizado = service.actualizarAula(aula);
+	@PatchMapping("/{id}")
+	public ResponseEntity<AulaDTO> actualizarAula(@PathVariable Long id,@RequestBody AulaDTO aulaDTO) {
+		Aula aula =  service.actualizarAula(id, aulaDTO);
+		AulaDTO aulaActualizado = modelMapper.map(aula, AulaDTO.class);
 		return ResponseEntity.ok(aulaActualizado);
 	}
 
-	@DeleteMapping("/aula/{id}")
-	public ResponseEntity<Map<String, Boolean>>  eliminarAula(@PathVariable Long id) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		service.eliminarAula(aula);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> eliminarAula(@PathVariable Long id) {
+		service.eliminarAula(id);
+		return ResponseEntity.noContent().build();
 	}
 
 }

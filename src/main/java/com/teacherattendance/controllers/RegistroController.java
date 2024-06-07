@@ -20,11 +20,6 @@ public class RegistroController {
 	
 	@Autowired
 	private UserServiceImp userService;
-	
-//	@ModelAttribute("usuario")
-//	public UserDTO returnUserRegistroDto() {
-//		return new UserDTO();
-//	}
 
 	@PostMapping(value = "login")
 	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {

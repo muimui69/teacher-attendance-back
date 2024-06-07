@@ -1,10 +1,11 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,62 +18,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teacherattendance.dto.AulaDto;
 import com.teacherattendance.dto.LicenciaDTO;
-import com.teacherattendance.entity.Aula;
 import com.teacherattendance.entity.Licencia;
-import com.teacherattendance.entity.Modulo;
-import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.service.LicenciaServiceImp;
-import com.teacherattendance.service.UserServiceImp;
 
 @RestController
-@CrossOrigin(origins = "")
-@RequestMapping("/api/")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/Licencia")
 public class LicenciaController {
 	
 	@Autowired
 	private LicenciaServiceImp service;
 	
 	@Autowired
-	private UserServiceImp userService;
+	private ModelMapper modelMapper;
 	
-	@GetMapping("/licencia")
-	public List<Licencia> listarAula() {
-		return service.findAll();
+	@GetMapping
+	public ResponseEntity<List<LicenciaDTO>> listarLicencia() {
+		List<Licencia> licencias = service.findAll();
+		List<LicenciaDTO> licenciaDTOs = licencias.stream()
+				.map(licencia -> modelMapper.map(licencias, LicenciaDTO.class)).collect(Collectors.toList());
+		return new ResponseEntity<>(licenciaDTOs, HttpStatus.OK);
 	}
 	
-	@PostMapping("/licencia")
-	public Licencia guardarLicencia(@Validated @RequestBody LicenciaDTO licenciaDto) throws Exception{
-		List<Usuarios> user = userService.listUser(); 
-		return service.guardarLicencia(licenciaDto); 
+	@PostMapping
+	public ResponseEntity<Licencia> guardarLicencia(@Validated @RequestBody LicenciaDTO licenciaDto) throws Exception{
+		return new ResponseEntity<>(service.guardarLicencia(licenciaDto), HttpStatus.OK); 
 	}
 
-	@GetMapping("/licencia/{id}")
-	public ResponseEntity<Licencia> obtenerLicencia(@PathVariable Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<LicenciaDTO> obtenerLicencia(@PathVariable Long id) {
 		Licencia licencia =  service.obtenerLicencia(id);
-		return ResponseEntity.ok(licencia);
+		LicenciaDTO licenciaDTO = modelMapper.map(licencia, LicenciaDTO.class);
+		return ResponseEntity.ok(licenciaDTO);
 	}
 
-	@PutMapping("/aula/{id}")
-	public ResponseEntity<Licencia> actualizarLicencia(@PathVariable Long id,@RequestBody Licencia detalleLicencia) {
-		Licencia licencia =  service.obtenerLicencia(id);
-		licencia.setId(detalleLicencia.getId()); 
-		licencia.setTitulo(detalleLicencia.getTitulo());
-		licencia.setDescripcion(detalleLicencia.getDescripcion());
-		licencia.setDocente(detalleLicencia.getDocente());
-		licencia.setFecha(detalleLicencia.getFecha());
-		Licencia Actualizado = service.actualizarLicencia(licencia);
-		return ResponseEntity.ok(Actualizado);
+	@PutMapping("/{id}")
+	public ResponseEntity<Licencia> actualizarLicencia(@PathVariable Long id,@RequestBody LicenciaDTO licenciaDTO) {
+		return new ResponseEntity<>(service.actualizarLicencia(id, licenciaDTO), HttpStatus.OK); 
 	}
 
-	@DeleteMapping("/licencia/{id}")
-	public ResponseEntity<Map<String, Boolean>>  eliminarLicencia(@PathVariable Long id) {
-		Licencia licencia =  service.obtenerLicencia(id);
-		service.eliminarLicencia(licencia);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> eliminarLicencia(@PathVariable Long id) {
+		service.eliminarLicencia(id);
+		return ResponseEntity.noContent().build();
 	}
 
 }

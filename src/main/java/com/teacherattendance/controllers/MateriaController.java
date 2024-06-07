@@ -1,10 +1,11 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teacherattendance.dto.MateriaDTO;
@@ -20,46 +22,45 @@ import com.teacherattendance.entity.Materia;
 import com.teacherattendance.service.MateriaServiceImp;
 
 @RestController
-@CrossOrigin(origins = "")
+@RequestMapping("/Materia")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MateriaController {
 
 	@Autowired
 	private MateriaServiceImp service;
 	
-	@GetMapping("/materia")
-	public List<Materia> listarMateria() {
-		return service.findAll();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@GetMapping
+	public ResponseEntity<List<MateriaDTO>> listarMateria() {
+		List<Materia> materias = service.findAll();
+		List<MateriaDTO> materiaDTOs = materias.stream()
+				.map(maateria -> modelMapper.map(materias, MateriaDTO.class)).collect(Collectors.toList());
+		return new ResponseEntity<>(materiaDTOs, HttpStatus.OK);
 	}
 	
-	@PostMapping("/materia")
-	public Materia guardarMateria(@RequestBody MateriaDTO materiaDTO) {
-		return service.guardarMateria(materiaDTO);
+	@PostMapping
+	public ResponseEntity<Materia> guardarMateria(@RequestBody MateriaDTO materiaDTO) {
+		return new ResponseEntity<>(service.guardarMateria(materiaDTO), HttpStatus.OK);
 	}
 
-	@GetMapping("/materia/{id}")
-	public ResponseEntity<Materia> obtenerMateria(@PathVariable Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<MateriaDTO> obtenerMateria(@PathVariable Long id) {
 		Materia materia =  service.obtenerMateria(id);
-		return ResponseEntity.ok(materia);
+		MateriaDTO materiaDTO = modelMapper.map(materia, MateriaDTO.class);
+		return ResponseEntity.ok(materiaDTO);
 	}
 
-	@PutMapping("/materia/{id}")
-	public ResponseEntity<Materia> actualizarMateria(@PathVariable Long id,@RequestBody Materia detalleMateria) {
-		Materia materia =  service.obtenerMateria(id);
-		materia.setId(detalleMateria.getId()); 
-		materia.setCarrera(detalleMateria.getCarrera());
-		materia.setNombre(detalleMateria.getNombre());
-		materia.setSigla(detalleMateria.getSigla());
-		Materia materiaActualizado =  service.actualizarMateria(materia);
-		return ResponseEntity.ok(materiaActualizado);
+	@PutMapping("/{id}")
+	public ResponseEntity<Materia> actualizarMateria(@PathVariable Long id,@RequestBody MateriaDTO materiaDTO) {
+		return new ResponseEntity<>(service.actualizarMateria(id, materiaDTO), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/materia/{id}")
-	public ResponseEntity<Map<String, Boolean>>  eliminarMateria(@PathVariable Long id) {
-		Materia materia =  service.obtenerMateria(id);
-		service.eliminarMateria(materia);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void>  eliminarMateria(@PathVariable Long id) {
+		service.eliminarMateria(id);
+		return ResponseEntity.noContent().build();
 	}
 	
 }
