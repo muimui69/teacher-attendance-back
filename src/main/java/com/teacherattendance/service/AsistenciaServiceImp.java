@@ -30,8 +30,7 @@ public class AsistenciaServiceImp {
 	}
 	
 	public Asistencia obtenerAsistencia(Long id) {
-		return repositorio.findById(id).
-				orElseThrow(() -> new ResourceNotFoundException("No existe"));
+		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
 	}
 	
 	public Asistencia actualizarAsistencia(Asistencia asistencia) {

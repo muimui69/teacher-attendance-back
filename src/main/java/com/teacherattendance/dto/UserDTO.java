@@ -11,10 +11,10 @@ import jakarta.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO  {
-
-    private Long id;
+	
+	private Long id;
 
     @NotEmpty(message = "ingrese un nombre")
     private String nombre;

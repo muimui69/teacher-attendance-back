@@ -1,41 +1,39 @@
 package com.teacherattendance.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teacherattendance.auth.AuthResponse;
+import com.teacherattendance.auth.LoginRequest;
 import com.teacherattendance.dto.UserDTO;
-import com.teacherattendance.entity.Usuarios;
-import com.teacherattendance.service.UserService;
+import com.teacherattendance.service.UserServiceImp;
 
 @RestController
-@RequestMapping("/registro")
+@RequestMapping("/si2")
+@CrossOrigin(origins = {"http://localhost:4200"})
 public class RegistroController {
 	
-	private UserService userService;
+	@Autowired
+	private UserServiceImp userService;
 	
-	@ModelAttribute("usuario")
-	public UserDTO returnUserRegistroDto() {
-		return new UserDTO();
+//	@ModelAttribute("usuario")
+//	public UserDTO returnUserRegistroDto() {
+//		return new UserDTO();
+//	}
+
+	@PostMapping(value = "login")
+	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+		return ResponseEntity.ok(userService.login(request));
 	}
 	
-//	@GetMapping
-//	public String mostrarFormRegistro() {
-//		return "registro";
-//	}
-	
-//	@PostMapping
-//	public String registrarCuentaUser(@ModelAttribute("usuario") UserDTO userDto) {
-//		userService.createUser(userDto);
-//		return "redirect:/registro?exito";
-//	}
-	
-	@PostMapping
-	public Usuarios registrarCuentaUser(@RequestBody UserDTO userDto) {
-		return userService.createUser(userDto);
+	@PostMapping(value = "register")
+	public ResponseEntity<AuthResponse> register(@RequestBody UserDTO userDto) {
+		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
 }

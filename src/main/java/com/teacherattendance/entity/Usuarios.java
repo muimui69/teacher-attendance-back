@@ -2,7 +2,13 @@ package com.teacherattendance.entity;
 
 import lombok.*;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 
@@ -13,8 +19,9 @@ import jakarta.persistence.*;
 @Setter
 @Table(name = "usuarios", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Entity
-public class Usuarios {
-    @Id
+public class Usuarios implements UserDetails{
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -42,7 +49,37 @@ public class Usuarios {
 		this.password = password;
 		this.roles = roles;
 	}
-    
-    
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles.stream()
+	            .map(role -> new SimpleGrantedAuthority(role.getNombre()))
+	            .collect(Collectors.toSet());
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
 }
