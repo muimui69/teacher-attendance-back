@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
@@ -26,10 +27,10 @@ public class CarreraController {
 	private CarreraServiceImp service;
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<CarreraDTO>>> listarCarreras() {
-		List<CarreraDTO> carreras = service.findAll();
+	public ResponseEntity<ApiResponse<List<Carrera>>> listarCarreras() {
+		List<Carrera> carreras = service.findAll();
 		return new ResponseEntity<>(
-				ApiResponse.<List<CarreraDTO>>builder()
+				ApiResponse.<List<Carrera>>builder()
 						.statusCode(HttpStatus.OK.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
 						.data(carreras)
@@ -40,21 +41,21 @@ public class CarreraController {
 
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<CarreraDTO>> crearCarrera(@Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponse<Carrera>> guardarCarrera(@Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		CarreraDTO carreraCreada = service.guardarCarrera(carreraDTO);
+		Carrera carreraCreada = service.guardarCarrera(carreraDTO);
 		return new ResponseEntity<>(
-				ApiResponse.<CarreraDTO>builder()
+				ApiResponse.<Carrera>builder()
 						.statusCode(HttpStatus.CREATED.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
 						.data(carreraCreada)
@@ -65,11 +66,11 @@ public class CarreraController {
 
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<CarreraDTO>> obtenerCarrera(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Carrera>> obtenerCarrera(@PathVariable Long id) {
 		try {
-			Optional<CarreraDTO> carreraOpt = service.obtenerCarrera(id);
+			Optional<Carrera> carreraOpt = service.obtenerCarrera(id);
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
 							.data(carreraOpt.get())
@@ -78,7 +79,7 @@ public class CarreraController {
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
@@ -89,16 +90,14 @@ public class CarreraController {
 
 
 
-
-
 	@PatchMapping("/{id}")
-	public ResponseEntity<ApiResponse<CarreraDTO>> actualizarCarrera(@PathVariable Long id, @Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponse<Carrera>> actualizarCarrera(@PathVariable Long id, @Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
@@ -106,9 +105,9 @@ public class CarreraController {
 		}
 
 		try {
-			CarreraDTO carreraActualizada = service.actualizarCarrera(id, carreraDTO);
+			Carrera carreraActualizada = service.actualizarCarrera(id, carreraDTO);
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
 							.data(carreraActualizada)
@@ -117,7 +116,7 @@ public class CarreraController {
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<CarreraDTO>builder()
+					ApiResponse.<Carrera>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),

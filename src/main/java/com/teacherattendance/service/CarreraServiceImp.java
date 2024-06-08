@@ -15,7 +15,6 @@ import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.repository.CarreraRepository;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
 
 @Service
 public class CarreraServiceImp {
@@ -24,30 +23,28 @@ public class CarreraServiceImp {
 	private CarreraRepository repositorio;
 
 	@Transactional(readOnly = true)
-	public List<CarreraDTO> findAll() {
+	public List<Carrera> findAll() {
 		List<Carrera> carreras = (List<Carrera>) repositorio.findAll();
-		return carreras.stream()
-				.map(this::convertToDto)
-				.collect(Collectors.toList());
+		return carreras;
 	}
 
-	public CarreraDTO guardarCarrera(CarreraDTO carreraDTO) {
+	public Carrera guardarCarrera(CarreraDTO carreraDTO) {
 		Carrera carrera = new Carrera(carreraDTO.getId(), carreraDTO.getNombre());
 		Carrera savedCarrera = repositorio.save(carrera);
-		return convertToDto(savedCarrera);
+		return savedCarrera;
 	}
 
-	public Optional<CarreraDTO> obtenerCarrera(Long id) {
+	public Optional<Carrera> obtenerCarrera(Long id) {
 		Optional<Carrera> carreraOpt = repositorio.findById(id);
 		if (!carreraOpt.isPresent()) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
 			);
 		}
-		return carreraOpt.map(this::convertToDto);
+		return carreraOpt;
 	}
 
-	public CarreraDTO actualizarCarrera(Long id, CarreraDTO carreraDTO) {
+	public Carrera actualizarCarrera(Long id, CarreraDTO carreraDTO) {
 		Optional<Carrera> carreraOpt = repositorio.findById(id);
 		if (!carreraOpt.isPresent()) {
 			throw new ResponseStatusException(
@@ -58,7 +55,7 @@ public class CarreraServiceImp {
 		Carrera carrera = carreraOpt.get();
 		carrera.setNombre(carreraDTO.getNombre());
 		Carrera updatedCarrera = repositorio.save(carrera);
-		return convertToDto(updatedCarrera);
+		return updatedCarrera;
 	}
 
 	public void eliminarCarrera(Long id) {
@@ -69,10 +66,6 @@ public class CarreraServiceImp {
 			);
 		}
 		repositorio.delete(carreraOpt.get());
-	}
-
-	private CarreraDTO convertToDto(Carrera carrera) {
-		return new CarreraDTO(carrera.getId(), carrera.getNombre());
 	}
 
 }

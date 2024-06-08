@@ -18,7 +18,6 @@ public class CarreraDTO {
 
     @NotNull(message = "El nombre de la carrera no puede ser nulo.")
     @NotEmpty(message = "El nombre de la carrera no puede estar vacio.")
-    @Pattern(regexp = "^[^\\d]*$", message = "El nombre de la carrera no debe contener números.")
 	private String nombre;
 
 }

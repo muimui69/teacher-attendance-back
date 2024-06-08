@@ -1,16 +1,13 @@
 package com.teacherattendance.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,9 +24,9 @@ public class Materia {
 	private String nombre;
 	
 	private String sigla;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_Carrera")
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "id_carrera", nullable = false)
 	private Carrera carrera;
 
 }
