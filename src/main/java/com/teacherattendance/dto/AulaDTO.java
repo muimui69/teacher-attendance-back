@@ -19,5 +19,4 @@ public class AulaDTO {
 	
 	private Modulo modulo;
 	
-
 }

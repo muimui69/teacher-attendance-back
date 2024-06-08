@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -89,7 +90,7 @@ public class UserServiceImp implements UserService {
 	
 	@Override
 	public AuthResponse createUserAdmin(UserDTO userDto) {
-		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_DOCENTE");
+		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_ADMIN");
 		Roles userRole = optionalUserRole.orElseGet(() -> rolRepository.save(new Roles ("ROLE_ADMIN")));
 		Set<Roles> roles = Collections.singleton(userRole);
 		Usuarios usuario = new Usuarios(userDto.getNombre(), 

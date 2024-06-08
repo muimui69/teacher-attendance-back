@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/si2")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 	
@@ -24,16 +24,24 @@ public class UserController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllAdmins() {
-        return ResponseEntity.ok(service.listUser());
+    public ResponseEntity<List<Usuarios>> getAllAdmins() {
+        return ResponseEntity.ok(service.listUsuarios());
     }
 
+//    @GetMapping("/{id}")
+//    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+//        Usuarios user = service.obtenerUserPorId(id);
+//        UserDTO userDto = modelMapper.map(user, UserDTO.class);
+//        return new ResponseEntity<>(userDto, HttpStatus.OK);
+//    }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<Usuarios> getUserById(@PathVariable("id") Long id) {
         Usuarios user = service.obtenerUserPorId(id);
-        UserDTO userDto = modelMapper.map(user, UserDTO.class);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+//        UserDTO userDto = modelMapper.map(user, UserDTO.class);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
+    
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDto) {

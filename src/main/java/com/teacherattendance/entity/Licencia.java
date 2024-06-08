@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -40,7 +39,6 @@ public class Licencia {
 	private Usuarios docente;
 	
 	@DateTimeFormat(iso = ISO.DATE)
-	@Past
 	@NotNull(message = "Debe ingresar la fecha para que la solicita la licencia")
 	private LocalDate fecha;
 

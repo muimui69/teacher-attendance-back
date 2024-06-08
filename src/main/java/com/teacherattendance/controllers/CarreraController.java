@@ -7,12 +7,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.service.CarreraServiceImp;
 
 @RestController
-@RequestMapping("/Carrera")
+@RequestMapping("/api/carrera")
 @CrossOrigin(origins = "http://localhost:4200")
 public class CarreraController {
 	
@@ -35,11 +36,12 @@ public class CarreraController {
 	public ResponseEntity<List<CarreraDTO>> listarCarrera() {
 		List<Carrera> carrera = service.findAll();
 		List<CarreraDTO> carreraDTO = carrera.stream()
-				.map(carreras -> modelMapper.map(carrera, CarreraDTO.class)).collect(Collectors.toList());
+				.map(carreras -> modelMapper.map(carreras, CarreraDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(carreraDTO, HttpStatus.OK);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Carrera guardarCarrera(@RequestBody CarreraDTO carreraDTO) {
 		return service.guardarCarrera(carreraDTO);
 	}
@@ -51,7 +53,8 @@ public class CarreraController {
 		return new ResponseEntity<>(carreraDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("/{id}")
+	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<CarreraDTO> actualizarCarrera(@PathVariable Long id,@RequestBody CarreraDTO detalleCarrera) {
 		Carrera carreraActualizado = service.actualizarCarrera(id, detalleCarrera);
 		CarreraDTO carreraDTO = modelMapper.map(carreraActualizado, CarreraDTO.class);
@@ -59,6 +62,7 @@ public class CarreraController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Void> eliminarCarrera(@PathVariable Long id) {
 		service.eliminarCarrera(id);
 		return ResponseEntity.noContent().build();

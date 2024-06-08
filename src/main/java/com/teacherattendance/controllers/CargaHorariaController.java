@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ import com.teacherattendance.entity.CargaHoraria;
 import com.teacherattendance.service.CargaHorariaServiceImp;
 
 @RestController
-@RequestMapping("/CargaHoraria")
+@RequestMapping("/api/cargaHoraria")
 @CrossOrigin(origins = "http://localhost:4200")
 public class CargaHorariaController {
 	
@@ -36,11 +37,12 @@ public class CargaHorariaController {
 	public ResponseEntity<List<CargaHorariaDTO>> listarCargaHoraria(){
 		List<CargaHoraria> cargaHoraria = service.findAll();
 		List<CargaHorariaDTO> cargaHorariaDTO = cargaHoraria.stream()
-				.map(carga -> modelMapper.map(cargaHoraria, CargaHorariaDTO.class)).collect(Collectors.toList());
+				.map(carga -> modelMapper.map(carga, CargaHorariaDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(cargaHorariaDTO, HttpStatus.OK);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<CargaHoraria> guardarCargaHoraria(@Validated @RequestBody CargaHorariaDTO cargaHorariaDTO) throws Exception{
 		return new ResponseEntity<>(service.guardarCargaHoraria(cargaHorariaDTO), HttpStatus.OK); 
 	}
@@ -53,11 +55,13 @@ public class CargaHorariaController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<CargaHoraria> actualizarCargaHoraria(@PathVariable Long id,@RequestBody CargaHorariaDTO cargaHorariaDTO) {
 		return new ResponseEntity<>(service.actualizarCargaHoraria(id, cargaHorariaDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Void> eliminarCargaHoraria(@PathVariable Long id) {
 		service.eliminarCargaHoraria(id);
 		return ResponseEntity.noContent().build();

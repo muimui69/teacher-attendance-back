@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.service.ModuloServiceImp;
 
 @RestController
-@RequestMapping("/Modulo")
+@RequestMapping("/api/modulo")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ModuloController {
 	
@@ -35,11 +36,12 @@ public class ModuloController {
 	public ResponseEntity<List<ModuloDTO>> listarModulos(){
 		List<Modulo> modulos = service.findAll();
 		List<ModuloDTO> moduloDTOs = modulos.stream()
-				.map(modulo -> modelMapper.map(modulos, ModuloDTO.class)).collect(Collectors.toList());
+				.map(modulo -> modelMapper.map(modulo, ModuloDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(moduloDTOs, HttpStatus.OK);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Modulo> guardarModulo(@RequestBody ModuloDTO moduloDTO) {
 		return new ResponseEntity<>(service.guardarModulo(moduloDTO), HttpStatus.OK);
 	}
@@ -52,11 +54,13 @@ public class ModuloController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Modulo> actualizarModulo(@PathVariable Long id,@RequestBody ModuloDTO moduloDTO) {
 		return new ResponseEntity<>(service.actualizarModulo(id, moduloDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Void>  eliminarModulo(@PathVariable Long id) {
 		service.eliminarModulo(id);
 		return ResponseEntity.noContent().build();

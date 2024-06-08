@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -32,12 +31,10 @@ public class Periodo {
 	private String nombre;
     
 	@DateTimeFormat(iso = ISO.DATE)
-	@Past
 	@NotNull(message = "Debe ingresar la feha de inicio")
 	private LocalDate fecha_inicio;
 	
 	@DateTimeFormat(iso = ISO.DATE)
-	@Past
 	@NotNull(message = "Debe ingresar la feha del fin")
 	private LocalDate fecha_fin;
 

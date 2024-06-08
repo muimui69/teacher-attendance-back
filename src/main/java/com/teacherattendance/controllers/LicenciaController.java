@@ -24,7 +24,7 @@ import com.teacherattendance.service.LicenciaServiceImp;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/Licencia")
+@RequestMapping("/api/licencia")
 public class LicenciaController {
 	
 	@Autowired
@@ -37,7 +37,7 @@ public class LicenciaController {
 	public ResponseEntity<List<LicenciaDTO>> listarLicencia() {
 		List<Licencia> licencias = service.findAll();
 		List<LicenciaDTO> licenciaDTOs = licencias.stream()
-				.map(licencia -> modelMapper.map(licencias, LicenciaDTO.class)).collect(Collectors.toList());
+				.map(licencia -> modelMapper.map(licencia, LicenciaDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(licenciaDTOs, HttpStatus.OK);
 	}
 	

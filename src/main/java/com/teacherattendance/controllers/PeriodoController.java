@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ import com.teacherattendance.entity.Periodo;
 import com.teacherattendance.service.PeriodoServiceImp;
 
 @RestController
-@RequestMapping("/Periodo")
+@RequestMapping("/api/periodo")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PeriodoController {
 	
@@ -36,11 +37,12 @@ public class PeriodoController {
 	public ResponseEntity<List<PeriodoDTO>> listarPeriodos(){
 		List<Periodo> periodos = service.findAll();
 		List<PeriodoDTO> periodoDTOs = periodos.stream()
-				.map(periodo -> modelMapper.map(periodos, PeriodoDTO.class)).collect(Collectors.toList());
+				.map(periodo -> modelMapper.map(periodo, PeriodoDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(periodoDTOs, HttpStatus.OK);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Periodo> guardarPeriodo(@Validated @RequestBody PeriodoDTO periodoDTO) throws Exception{
 		return new ResponseEntity<>(service.guardarPeriodo(periodoDTO), HttpStatus.OK); 
 	}
@@ -53,11 +55,13 @@ public class PeriodoController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Periodo> actualizarPeriodo(@PathVariable Long id,@RequestBody PeriodoDTO periodoDTO) {
 		return new ResponseEntity<>(service.actualizarPeriodo(id, periodoDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Void> eliminarCargaHoraria(@PathVariable Long id) {
 		service.eliminarPeriodo(id);
 		return ResponseEntity.noContent().build();

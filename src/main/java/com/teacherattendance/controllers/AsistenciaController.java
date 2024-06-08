@@ -20,7 +20,7 @@ import com.teacherattendance.entity.Asistencia;
 import com.teacherattendance.service.AsistenciaServiceImp;
 
 @RestController
-@RequestMapping("/Asistencia")
+@RequestMapping("/api/asistencia")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AsistenciaController {
 	
@@ -34,7 +34,7 @@ public class AsistenciaController {
 	public ResponseEntity<List<AsistenciaDTO>> listarAsistencia() {
 		List<Asistencia> asistencias = service.findAll();
 		List<AsistenciaDTO> asistenciaDTO = asistencias.stream()
-				.map(asistencia -> modelMapper.map(asistencias, AsistenciaDTO.class)).collect(Collectors.toList());
+				.map(asistencia -> modelMapper.map(asistencia, AsistenciaDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(asistenciaDTO, HttpStatus.OK);
 	}
 	
