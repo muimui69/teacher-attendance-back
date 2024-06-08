@@ -4,13 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.teacherattendance.util.HttpStatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.teacherattendance.dto.CarreraDTO;
 import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.repository.CarreraRepository;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class CarreraServiceImp {
@@ -33,24 +38,41 @@ public class CarreraServiceImp {
 	}
 
 	public Optional<CarreraDTO> obtenerCarrera(Long id) {
-		Optional<Carrera> carrera = repositorio.findById(id);
-		return carrera.map(this::convertToDto);
+		Optional<Carrera> carreraOpt = repositorio.findById(id);
+		if (!carreraOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		return carreraOpt.map(this::convertToDto);
 	}
 
-//	public Carrera actualizarCarrera(Carrera carrera) {
-//		return repositorio.save(carrera);
-//	}
-	
-//	public void eliminarCarrera(Carrera carrera) {
-//		repositorio.delete(carrera);
-//	}
+	public CarreraDTO actualizarCarrera(Long id, CarreraDTO carreraDTO) {
+		Optional<Carrera> carreraOpt = repositorio.findById(id);
+		if (!carreraOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		carreraDTO.setId(null);
+		Carrera carrera = carreraOpt.get();
+		carrera.setNombre(carreraDTO.getNombre());
+		Carrera updatedCarrera = repositorio.save(carrera);
+		return convertToDto(updatedCarrera);
+	}
+
+	public void eliminarCarrera(Long id) {
+		Optional<Carrera> carreraOpt = repositorio.findById(id);
+		if (!carreraOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		repositorio.delete(carreraOpt.get());
+	}
 
 	private CarreraDTO convertToDto(Carrera carrera) {
 		return new CarreraDTO(carrera.getId(), carrera.getNombre());
-	}
-
-	private Carrera convertToEntity(CarreraDTO carreraDTO) {
-		return new Carrera(carreraDTO.getId(), carreraDTO.getNombre());
 	}
 
 }
