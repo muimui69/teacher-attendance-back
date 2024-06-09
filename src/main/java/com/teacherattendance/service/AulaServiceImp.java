@@ -1,8 +1,17 @@
 package com.teacherattendance.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.teacherattendance.dto.MateriaDTO;
+import com.teacherattendance.entity.Carrera;
+import com.teacherattendance.entity.Materia;
+import com.teacherattendance.entity.Modulo;
+import com.teacherattendance.repository.CarreraRepository;
+import com.teacherattendance.repository.ModuloRepository;
+import com.teacherattendance.util.HttpStatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,33 +19,76 @@ import com.teacherattendance.dto.AulaDto;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.repository.AulaRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AulaServiceImp {
 	
 	@Autowired
 	private AulaRepository repositorio;
+
+	@Autowired
+	private ModuloRepository moduloRepository;
 	
 	@Transactional(readOnly = true)
 	public List<Aula> findAll(){
-		return (List<Aula>) repositorio.findAll();
+		List<Aula> aulas = repositorio.findAll();
+		return aulas;
 	}
 	
 	public Aula guardarAula(AulaDto aulaDto) {
-		Aula aula = new Aula(aulaDto.getId(), aulaDto.getNombre(), aulaDto.getModulo());
+		Optional<Modulo> moduloOpt = moduloRepository.findById(aulaDto.getModuloId());
+		if (!moduloOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "No existe el modulo con el id " + aulaDto.getModuloId()
+			);
+		}
+		Aula aula = new Aula();
+		aula.setNombre(aulaDto.getNombre());
+		aula.setModulo(moduloOpt.get());
 		return repositorio.save(aula);
 	}
 	
-	public Aula obtenerAulaPorId(Long id) {
-		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
+	public Optional<Aula> obtenerAula(Long id) {
+		Optional<Aula> aulaOpt = repositorio.findById(id);
+		if (!aulaOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "No existe el aula con el id " + id
+			);
+		}
+		return aulaOpt;
 	}
 	
-	public Aula actualizarAula(Aula aula) {
+	public Aula actualizarAula(Long id, AulaDto aulaDto) {
+		Optional<Aula> aulaOpt = repositorio.findById(id);
+		if (!aulaOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND,"No existe el aula con el id " + id
+			);
+		}
+
+		Optional<Modulo> moduloOpt = moduloRepository.findById(aulaDto.getModuloId());
+		if (!moduloOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "No existe el modulo con el id " + aulaDto.getModuloId()
+			);
+		}
+
+		aulaDto.setId(null);
+		Aula aula = aulaOpt.get();
+		aula.setNombre(aulaDto.getNombre());
+		aula.setModulo(moduloOpt.get());
 		return repositorio.save(aula);
 	}
 	
-	public void eliminarAula(Aula aula) {
-		repositorio.delete(aula);
+	public void eliminarAula(Long id) {
+		Optional<Aula> aulaOpt = repositorio.findById(id);
+		if (!aulaOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "No existe el aula con el id " + id
+			);
+		}
+		repositorio.delete(aulaOpt.get());
 	}
 
 }

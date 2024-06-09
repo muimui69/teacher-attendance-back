@@ -1,76 +1,158 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.teacherattendance.entity.Materia;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.util.HttpStatusMessage;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.teacherattendance.dto.AulaDto;
 import com.teacherattendance.entity.Aula;
-import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.service.AulaServiceImp;
-import com.teacherattendance.service.ModuloServiceImp;
 
-import jakarta.validation.ValidationException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins = "")
+@RequestMapping("/aula")
 public class AulaController {
 	
 	@Autowired
 	private AulaServiceImp service;
 	
-	@Autowired
-	private ModuloServiceImp moduloService;
-	
-	@GetMapping("/aula")
-	public List<Aula> listarAula() {
-		return service.findAll();
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<Aula>>>listarAula() {
+		List<Aula> aulas = service.findAll();
+		return new ResponseEntity<>(
+				ApiResponse.<List<Aula>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(aulas)
+						.build(),
+				HttpStatus.OK
+		);
 	}
 	
-	@PostMapping("/aula")
-	public Aula guardarAula(@Validated @RequestBody AulaDto aulaDto) throws Exception{
-		List<Modulo> modulo = moduloService.findAll();
-		return service.guardarAula(aulaDto); 
+	@PostMapping
+	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDto aulaDto, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		try {
+			Aula aulaCreada = service.guardarAula(aulaDto);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(aulaCreada)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
-	@GetMapping("/aula/{id}")
-	public ResponseEntity<Aula> obtenerAula(@PathVariable Long id) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		return ResponseEntity.ok(aula);
+	@GetMapping("/{id}")
+	public  ResponseEntity<ApiResponse<Aula>> obtenerAula(@PathVariable Long id) {
+		try {
+	   		Optional<Aula> aulaOpt = service.obtenerAula(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(aulaOpt.get())
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
-	@PutMapping("/aula/{id}")
-	public ResponseEntity<Aula> actualizarAula(@PathVariable Long id,@RequestBody Aula detalleAula) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		aula.setId(detalleAula.getId()); 
-		aula.setModulo(detalleAula.getModulo());
-		aula.setNombre(detalleAula.getNombre());
-		Aula aulaActualizado = service.actualizarAula(aula);
-		return ResponseEntity.ok(aulaActualizado);
+	@PatchMapping("/{id}")
+	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id,@Valid @RequestBody AulaDto aulaDto,BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+
+		try {
+			Aula aulaActualizada = service.actualizarAula(id, aulaDto);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(aulaActualizada)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
-	@DeleteMapping("/aula/{id}")
-	public ResponseEntity<Map<String, Boolean>>  eliminarAula(@PathVariable Long id) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		service.eliminarAula(aula);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public  ResponseEntity<ApiResponse<Void>> eliminarAula(@PathVariable Long id) {
+		try {
+			service.eliminarAula(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(HttpStatus.NO_CONTENT.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.NO_CONTENT))
+							.build(),
+					HttpStatus.NO_CONTENT
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 }

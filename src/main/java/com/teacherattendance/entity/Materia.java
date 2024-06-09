@@ -25,7 +25,7 @@ public class Materia {
 	
 	private String sigla;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "id_carrera", nullable = false)
 	private Carrera carrera;
 

@@ -22,8 +22,8 @@ public class ModuloDTO {
     @NotEmpty(message = "La ubicacion de la modulo no puede estar vacio.")
     private String ubicacion;
 
-    @NotNull(message = "El numero de la modulo no puede ser nulo.")
-    @Min( value = 1, message = "El numero de la modulo debe ser positivo")
+    @NotNull(message = "El numero del modulo no puede ser nulo.")
+    @Min( value = 1, message = "El numero del modulo debe ser positivo")
     private int numero;
 
 }

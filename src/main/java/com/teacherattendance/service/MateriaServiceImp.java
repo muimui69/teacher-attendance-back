@@ -40,7 +40,7 @@ public class MateriaServiceImp {
 		Optional<Carrera> carreraOpt = carreraRepository.findById(materiaDTO.getCarreraId());
 		if (!carreraOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe la carrera con el id " + materiaDTO.getCarreraId()
 			);
 		}
 		Materia materia = new Materia();
@@ -66,7 +66,7 @@ public class MateriaServiceImp {
 		Optional<Materia> materiaOpt = repositorio.findById(id);
 		if (!materiaOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe la materia con el id " + materiaDTO.getId()
+					HttpStatus.NOT_FOUND, "No existe la materia con el id " + id
 			);
 		}
 

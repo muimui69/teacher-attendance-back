@@ -28,13 +28,9 @@ public class Periodo {
     private Long id;
     
 	@DateTimeFormat(iso = ISO.DATE)
-	@Past
-	@NotNull(message = "Debe ingresar la feha de inicio")
 	private LocalDate fecha_inicio;
 	
 	@DateTimeFormat(iso = ISO.DATE)
-	@Past
-	@NotNull(message = "Debe ingresar la feha del fin")
 	private LocalDate fecha_fin;
 	
 	private int gestion;
