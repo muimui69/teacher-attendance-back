@@ -3,60 +3,147 @@ package com.teacherattendance.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.teacherattendance.dto.MateriaDTO;
+import com.teacherattendance.dto.ModuloDTO;
+import com.teacherattendance.entity.Materia;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.util.HttpStatusMessage;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.service.ModuloServiceImp;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins = "")
+@RequestMapping("/modulo")
 public class ModuloController {
 	
 	@Autowired
 	private ModuloServiceImp service;
 	
-	@GetMapping("/modulo")
-	public List<Modulo> listarModulo() {
-		return service.findAll();
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<Modulo>>> listarModulo() {
+		List<Modulo> modulos = service.findAll();
+		return new ResponseEntity<>(
+				ApiResponse.<List<Modulo>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(modulos)
+						.build(),
+				HttpStatus.OK
+		);
 	}
 	
-	@PostMapping("/modulo")
-	public Modulo guardarModulo(@RequestBody Modulo modulo) {
-		return service.guardarModulo(modulo);
+	@PostMapping
+	public  ResponseEntity<ApiResponse<Modulo>> guardarModulo(@Valid @RequestBody ModuloDTO moduloDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		Modulo moduloCreado = service.guardarModulo(moduloDTO);
+		return new ResponseEntity<>(
+				ApiResponse.<Modulo>builder()
+						.statusCode(HttpStatus.CREATED.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+						.data(moduloCreado)
+						.build(),
+				HttpStatus.CREATED
+		);
 	}
 
-	@GetMapping("/modulo/{id}")
-	public ResponseEntity<Modulo> obtenerModulo(@PathVariable Long id) {
-		Modulo modulo =  service.obtenerModulo(id);
-		return ResponseEntity.ok(modulo);
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<Modulo>>  obtenerModulo(@PathVariable Long id) {
+		try {
+			Optional<Modulo> moduloOpt = service.obtenerModulo(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(moduloOpt.get())
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
-	@PutMapping("/modulo/{id}")
-	public ResponseEntity<Modulo> actualizarModulo(@PathVariable Long id,@RequestBody Modulo detalleModulo) {
-		Modulo modulo =  service.obtenerModulo(id);
-		modulo.setId(detalleModulo.getId()); 
-		modulo.setNumero(detalleModulo.getNumero());
-		modulo.setUbicacion(detalleModulo.getUbicacion());
-		Modulo moduloActualizado = service.actualizarModulo(modulo);
-		return ResponseEntity.ok(moduloActualizado);
+	@PatchMapping("/{id}")
+	public ResponseEntity<ApiResponse<Modulo>> actualizarModulo(@PathVariable Long id, @Valid @RequestBody ModuloDTO moduloDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+
+		try {
+			Modulo moduloActualizada = service.actualizarModulo(id, moduloDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(moduloActualizada)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
-	@DeleteMapping("/modulo/{id}")
-	public ResponseEntity<Map<String, Boolean>>  eliminarModulo(@PathVariable Long id) {
-		Modulo modulo =  service.obtenerModulo(id);
-		service.eliminarModulo(modulo);
-		Map<String, Boolean> respuesta = new HashMap<>();
-		respuesta.put("eliminar", Boolean.TRUE);
-		return ResponseEntity.ok(respuesta);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ApiResponse<Void>>  eliminarModulo(@PathVariable Long id) {
+		try {
+			service.eliminarModulo(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(HttpStatus.NO_CONTENT.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.NO_CONTENT))
+							.build(),
+					HttpStatus.NO_CONTENT
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 

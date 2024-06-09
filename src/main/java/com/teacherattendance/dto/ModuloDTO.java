@@ -3,6 +3,9 @@ package com.teacherattendance.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teacherattendance.entity.Modulo;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +17,13 @@ import lombok.NoArgsConstructor;
 public class ModuloDTO {
 	
     private Long id;
-    
+
+    @NotNull(message = "La ubicacion de la modulo no puede ser nulo.")
+    @NotEmpty(message = "La ubicacion de la modulo no puede estar vacio.")
     private String ubicacion;
-    
+
+    @NotNull(message = "El numero de la modulo no puede ser nulo.")
+    @Min( value = 1, message = "El numero de la modulo debe ser positivo")
     private int numero;
 
 }

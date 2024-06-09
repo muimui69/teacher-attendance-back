@@ -32,7 +32,7 @@ public class MateriaServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Materia> findAll(){
-		List<Materia> materias = (List<Materia>) repositorio.findAll();
+        List<Materia> materias = repositorio.findAll();
 		return materias;
 	}
 
@@ -82,10 +82,10 @@ public class MateriaServiceImp {
 		materia.setNombre(materiaDTO.getNombre());
 		materia.setSigla(materiaDTO.getSigla());
 		materia.setCarrera(carreraOpt.get());
-		Materia updatedMateria = repositorio.save(materia);
-		return updatedMateria;
+		return repositorio.save(materia);
 	}
-	
+
+
 	public void eliminarMateria(Long id) {
 		Optional<Materia> materiaOpt = repositorio.findById(id);
 		if (!materiaOpt.isPresent()) {
