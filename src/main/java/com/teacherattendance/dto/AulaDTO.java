@@ -1,7 +1,6 @@
 package com.teacherattendance.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teacherattendance.entity.Modulo;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -12,7 +11,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class AulaDto {
+public class AulaDTO {
 	
     private Long id;
 

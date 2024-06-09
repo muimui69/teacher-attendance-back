@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.teacherattendance.entity.Materia;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
@@ -15,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import com.teacherattendance.dto.AulaDto;
+import com.teacherattendance.dto.AulaDTO;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.service.AulaServiceImp;
 
@@ -42,7 +41,7 @@ public class AulaController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDto aulaDto, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -99,7 +98,7 @@ public class AulaController {
 	}
 
 	@PatchMapping("/{id}")
-	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id,@Valid @RequestBody AulaDto aulaDto,BindingResult bindingResult) {
+	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id, @Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)

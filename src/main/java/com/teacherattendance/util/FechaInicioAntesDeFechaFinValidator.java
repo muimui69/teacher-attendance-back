@@ -1,6 +1,5 @@
 package com.teacherattendance.util;
 
-import com.teacherattendance.dto.PeriodoDTO;
 import com.teacherattendance.entity.Periodo;
 
 import javax.validation.ConstraintValidator;
@@ -8,7 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 
-public class FechaInicioAntesDeFechaFinValidator implements ConstraintValidator<FechaInicioAntesDeFechaFin, Object> {
+public class FechaInicioAntesDeFechaFinValidator implements ConstraintValidator<FechaInicioAntesDeFechaFin, Periodo> {
     private String beforeFieldName;
     private String afterFieldName;
 
@@ -19,7 +18,7 @@ public class FechaInicioAntesDeFechaFinValidator implements ConstraintValidator<
     }
 
     @Override
-    public boolean isValid(final Object value, ConstraintValidatorContext context) {
+    public boolean isValid(final Periodo value, ConstraintValidatorContext context) {
         try {
             final Field beforeDateField = value.getClass().getDeclaredField(beforeFieldName);
             beforeDateField.setAccessible(true);

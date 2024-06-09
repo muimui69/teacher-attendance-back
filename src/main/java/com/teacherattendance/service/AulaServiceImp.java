@@ -3,20 +3,14 @@ package com.teacherattendance.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.teacherattendance.dto.MateriaDTO;
-import com.teacherattendance.entity.Carrera;
-import com.teacherattendance.entity.Materia;
 import com.teacherattendance.entity.Modulo;
-import com.teacherattendance.repository.CarreraRepository;
 import com.teacherattendance.repository.ModuloRepository;
-import com.teacherattendance.util.HttpStatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.teacherattendance.dto.AulaDto;
-import com.teacherattendance.dto.error.ResourceNotFoundException;
+import com.teacherattendance.dto.AulaDTO;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.repository.AulaRepository;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +30,7 @@ public class AulaServiceImp {
 		return aulas;
 	}
 	
-	public Aula guardarAula(AulaDto aulaDto) {
+	public Aula guardarAula(AulaDTO aulaDto) {
 		Optional<Modulo> moduloOpt = moduloRepository.findById(aulaDto.getModuloId());
 		if (!moduloOpt.isPresent()) {
 			throw new ResponseStatusException(
@@ -59,7 +53,7 @@ public class AulaServiceImp {
 		return aulaOpt;
 	}
 	
-	public Aula actualizarAula(Long id, AulaDto aulaDto) {
+	public Aula actualizarAula(Long id, AulaDTO aulaDto) {
 		Optional<Aula> aulaOpt = repositorio.findById(id);
 		if (!aulaOpt.isPresent()) {
 			throw new ResponseStatusException(

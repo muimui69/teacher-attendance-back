@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teacherattendance.dto.AsistenciaDto;
+import com.teacherattendance.dto.AsistenciaDTO;
 import com.teacherattendance.entity.Asistencia;
 import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.service.AsistenciaServiceImp;
@@ -37,7 +37,7 @@ public class AsistenciaController {
 	}
 	
 	@PostMapping("/asistencia")
-	public Asistencia guardarAsistencia(@RequestBody AsistenciaDto asistencia) {
+	public Asistencia guardarAsistencia(@RequestBody AsistenciaDTO asistencia) {
 		List<Usuarios> user = userService.listUser();
 		return service.guardarAsistencia(asistencia);
 	}

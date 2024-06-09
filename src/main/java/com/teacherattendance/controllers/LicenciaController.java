@@ -17,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teacherattendance.dto.AulaDto;
 import com.teacherattendance.dto.LicenciaDTO;
-import com.teacherattendance.entity.Aula;
 import com.teacherattendance.entity.Licencia;
-import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.service.LicenciaServiceImp;
 import com.teacherattendance.service.UserServiceImp;

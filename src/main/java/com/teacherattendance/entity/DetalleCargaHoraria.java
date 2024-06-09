@@ -29,7 +29,7 @@ public class DetalleCargaHoraria {
     private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_cargaHoraria")
+	@JoinColumn(name = "id_carga_horaria")
 	private CargaHoraria cargaHoraria;
 
 	@ManyToOne
@@ -37,9 +37,9 @@ public class DetalleCargaHoraria {
 	private Aula aula;
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime inicio;
+	private LocalDateTime hora_inicio;
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime fin;
+	private LocalDateTime hora_fin;
 	
 }
