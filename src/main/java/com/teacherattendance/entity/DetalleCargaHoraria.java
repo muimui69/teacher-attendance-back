@@ -29,7 +29,7 @@ public class DetalleCargaHoraria {
     private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_cargaHoraria")
+	@JoinColumn(name = "id_carga_horaria")
 	private CargaHoraria cargaHoraria;
 	
 	@ManyToOne
@@ -40,18 +40,11 @@ public class DetalleCargaHoraria {
 	@JoinColumn(name = "id_aula")
 	private Aula aula;
 	
-<<<<<<< Updated upstream
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime inicio;
-	
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime fin;
-=======
 	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	private LocalTime hora_inicio;
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	private LocalTime hora_fin;
->>>>>>> Stashed changes
+
 	
 }

@@ -1,42 +1,28 @@
 package com.teacherattendance.dto;
 
-<<<<<<< Updated upstream
-import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teacherattendance.entity.Aula;
-import com.teacherattendance.entity.CargaHoraria;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-=======
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.validation.constraints.*;
-import lombok.*;
-
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
->>>>>>> Stashed changes
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
 public class DetalleCargaHorariaDTO {
-	
+
     private Long id;
-	
-	private CargaHoraria cargaHoraria;
 
-	private Aula aula;
-	
-	private LocalDateTime inicio;
-	
-	private LocalDateTime fin;
+    @NotNull(message = "El id del detalle carga horaria no puede ser nulo.")
+    private Long aulaId;
 
-<<<<<<< Updated upstream
-=======
     @NotNull(message = "La hora de inicio del detalle carga horaria  no puede ser nulo.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime hora_inicio;
@@ -51,5 +37,5 @@ public class DetalleCargaHorariaDTO {
     
     @NotNull(message = "El id_grupo del detalle carga horaria no puede ser nulo.")
     private Long grupoId;
->>>>>>> Stashed changes
+
 }

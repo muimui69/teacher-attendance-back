@@ -1,14 +1,5 @@
 package com.teacherattendance.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-<<<<<<< Updated upstream
-import com.teacherattendance.entity.Materia;
-import com.teacherattendance.entity.Modalidad;
-import com.teacherattendance.entity.Periodo;
-import com.teacherattendance.entity.Usuarios;
-=======
->>>>>>> Stashed changes
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CargaHorariaDTO {
 	
     private Long id;

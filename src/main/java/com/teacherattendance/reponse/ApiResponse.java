@@ -1,13 +1,8 @@
 package com.teacherattendance.reponse;
 
-<<<<<<< Updated upstream
 import java.util.List;
-
-=======
->>>>>>> Stashed changes
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +12,7 @@ import lombok.Data;
 @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class ApiResponse<T> {
-	private Integer  statusCode;
+    private Integer  statusCode;
     private String message;
     private T data;
     private List<String> errors;
@@ -36,5 +31,4 @@ public class ApiResponse<T> {
     public ApiResponse(List<String> errors) {
         this.errors = errors;
     }
-
 }

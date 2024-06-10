@@ -17,7 +17,7 @@ import com.teacherattendance.repository.UserRepository;
 
 @Configuration
 public class AplicationConfig {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 

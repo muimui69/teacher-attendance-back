@@ -9,72 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-<<<<<<< Updated upstream
-=======
 import org.springframework.validation.BindingResult;
->>>>>>> Stashed changes
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-<<<<<<< Updated upstream
-@RequestMapping("/api/user")
-=======
 @RequestMapping("/user")
->>>>>>> Stashed changes
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 	
 	@Autowired
     private UserService service;
-	
-	@Autowired
-    private ModelMapper modelMapper;
-
-<<<<<<< Updated upstream
-    @GetMapping
-    public ResponseEntity<List<Usuarios>> getAllAdmins() {
-        return ResponseEntity.ok(service.listUsuarios());
-    }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
-//        Usuarios user = service.obtenerUserPorId(id);
-//        UserDTO userDto = modelMapper.map(user, UserDTO.class);
-//        return new ResponseEntity<>(userDto, HttpStatus.OK);
-//    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuarios> getUserById(@PathVariable("id") Long id) {
-        Usuarios user = service.obtenerUserPorId(id);
-//        UserDTO userDto = modelMapper.map(user, UserDTO.class);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-    
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDto) {
-        Usuarios patchAdmin = service.updateAdmin(id, userDto);
-        UserDTO patchAdminDto = modelMapper.map(patchAdmin, UserDTO.class);
-        return new ResponseEntity<>(patchAdminDto, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
-        service.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    
-=======
-	@Autowired
-    private UserService service;
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<Usuarios>>> listarUsuarios() {
-		List<Usuarios> user = service.listUser();
+		List<Usuarios> user = service.listUsuarios();
 		return new ResponseEntity<>(
 				ApiResponse.<List<Usuarios>>builder()
 						.statusCode(HttpStatus.OK.value())
@@ -123,7 +76,6 @@ public class UserController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-
 		try {
 			Usuarios usuarioActualizado = service.updateUser(id, userDTO);
 			return new ResponseEntity<>(
@@ -166,5 +118,4 @@ public class UserController {
 			);
 		}
 	}
->>>>>>> Stashed changes
 }

@@ -1,23 +1,17 @@
 package com.teacherattendance.service;
 
 import java.util.List;
+import java.util.Optional;
 
-<<<<<<< Updated upstream
-=======
 import com.teacherattendance.dto.ModuloDTO;
 import com.teacherattendance.util.HttpStatusMessage;
->>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-<<<<<<< Updated upstream
-import com.teacherattendance.dto.ModuloDTO;
-import com.teacherattendance.dto.error.ResourceNotFoundException;
-=======
->>>>>>> Stashed changes
 import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.repository.ModuloRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ModuloServiceImp {
@@ -27,27 +21,50 @@ public class ModuloServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Modulo> findAll(){
-		return (List<Modulo>) repositorio.findAll();
+		List<Modulo> modulos = repositorio.findAll();
+		return modulos;
 	}
 	
 	public Modulo guardarModulo(ModuloDTO moduloDTO) {
-		Modulo modulo = new Modulo(moduloDTO.getId(), moduloDTO.getNumero(), moduloDTO.getUbicacion());
+		Modulo modulo = new Modulo();
+		modulo.setUbicacion(moduloDTO.getUbicacion());
+		modulo.setNumero(moduloDTO.getNumero());
 		return repositorio.save(modulo);
 	}
 	
-	public Modulo obtenerModulo(Long id) {
-		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
+	public Optional<Modulo> obtenerModulo(Long id) {
+		Optional<Modulo> moduloOpt = repositorio.findById(id);
+		if (!moduloOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		return moduloOpt;
 	}
 	
 	public Modulo actualizarModulo(Long id, ModuloDTO moduloDTO) {
-		Modulo modulo = obtenerModulo(id);
-		modulo.setNumero(moduloDTO.getNumero());
+		Optional<Modulo> moduloOpt = repositorio.findById(id);
+		if (!moduloOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+
+		moduloDTO.setId(null);
+		Modulo modulo = moduloOpt.get();
 		modulo.setUbicacion(moduloDTO.getUbicacion());
+		modulo.setNumero(moduloDTO.getNumero());
 		return repositorio.save(modulo);
 	}
 	
 	public void eliminarModulo(Long id) {
-		repositorio.deleteById(id);
+		Optional<Modulo> moduloOpt = repositorio.findById(id);
+		if (!moduloOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		repositorio.delete(moduloOpt.get());
 	}
 
 }

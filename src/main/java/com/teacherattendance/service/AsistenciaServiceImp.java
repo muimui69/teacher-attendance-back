@@ -41,11 +41,6 @@ public class AsistenciaServiceImp {
 		return repositorio.save(asistencia);
 	}
 	
-<<<<<<< Updated upstream
-	public Asistencia obtenerAsistencia(Long id) {
-		return repositorio.findById(id).
-				orElseThrow(() -> new ResourceNotFoundException("No existe"));
-=======
 	public Optional<Asistencia> obtenerAsistencia(Long id) {
 		Optional<Asistencia> asistenciaOpt = repositorio.findById(id);
 		if (!asistenciaOpt.isPresent()) {
@@ -54,7 +49,6 @@ public class AsistenciaServiceImp {
 			);
 		}
 		return asistenciaOpt;
->>>>>>> Stashed changes
 	}
 	
 	public Asistencia actualizarAsistencia(Long id, AsistenciaDTO asistenciaDTO){

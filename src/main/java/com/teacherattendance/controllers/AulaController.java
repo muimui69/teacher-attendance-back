@@ -1,72 +1,155 @@
 package com.teacherattendance.controllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.util.HttpStatusMessage;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import com.teacherattendance.dto.AulaDTO;
 import com.teacherattendance.entity.Aula;
 import com.teacherattendance.service.AulaServiceImp;
 
+import org.springframework.web.server.ResponseStatusException;
+
 @RestController
-@RequestMapping("/api/aula")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/aula")
 public class AulaController {
 	
 	@Autowired
 	private AulaServiceImp service;
 	
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	@GetMapping
-	public ResponseEntity<List<AulaDTO>> listarAula() {
-		List<Aula> aula = service.findAll();
-		List<AulaDTO> aulaDTO = aula.stream()
-				.map(aulas -> modelMapper.map(aulas, AulaDTO.class)).collect(Collectors.toList());
-		return new ResponseEntity<>(aulaDTO, HttpStatus.OK);
+	public ResponseEntity<ApiResponse<List<Aula>>>listarAula() {
+		List<Aula> aulas = service.findAll();
+		return new ResponseEntity<>(
+				ApiResponse.<List<Aula>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(aulas)
+						.build(),
+				HttpStatus.OK
+		);
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public Aula guardarAula(@Validated @RequestBody AulaDTO aulaDto) throws Exception{
-		return service.guardarAula(aulaDto); 
+	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		try {
+			Aula aulaCreada = service.guardarAula(aulaDto);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(aulaCreada)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<AulaDTO> obtenerAula(@PathVariable Long id) {
-		Aula aula =  service.obtenerAulaPorId(id);
-		AulaDTO aulaDTO = modelMapper.map(aula, AulaDTO.class);
-		return ResponseEntity.ok(aulaDTO);
+	public  ResponseEntity<ApiResponse<Aula>> obtenerAula(@PathVariable Long id) {
+		try {
+	   		Optional<Aula> aulaOpt = service.obtenerAula(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(aulaOpt.get())
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@PatchMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<AulaDTO> actualizarAula(@PathVariable Long id,@RequestBody AulaDTO aulaDTO) {
-		Aula aula =  service.actualizarAula(id, aulaDTO);
-		AulaDTO aulaActualizado = modelMapper.map(aula, AulaDTO.class);
-		return ResponseEntity.ok(aulaActualizado);
+	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id, @Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+
+		try {
+			Aula aulaActualizada = service.actualizarAula(id, aulaDto);
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(aulaActualizada)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Aula>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<Void> eliminarAula(@PathVariable Long id) {
-		service.eliminarAula(id);
-		return ResponseEntity.noContent().build();
+	public  ResponseEntity<ApiResponse<Void>> eliminarAula(@PathVariable Long id) {
+		try {
+			service.eliminarAula(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(HttpStatus.NO_CONTENT.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.NO_CONTENT))
+							.build(),
+					HttpStatus.NO_CONTENT
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 }

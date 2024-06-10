@@ -72,11 +72,7 @@ public class UserServiceImp implements UserService {
 		if (user.isPresent()) {
 			return user.get();
 		}else {
-<<<<<<< Updated upstream
-			throw new ResourceNotFoundException("El usuario no se encuntra");
-=======
 			throw new ResourceNotFoundException("El usuario no se encuentra");
->>>>>>> Stashed changes
 		}
 	}
 
@@ -115,11 +111,7 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-<<<<<<< Updated upstream
-	public Usuarios updateAdmin(Long id, UserDTO userDto) {
-=======
 	public Usuarios updateUser(Long id, UserDTO userDto) {
->>>>>>> Stashed changes
 		Usuarios user = obtenerUserPorId(id);
 		user.setNombre(userDto.getNombre());
 		user.setApellido(userDto.getApellido());

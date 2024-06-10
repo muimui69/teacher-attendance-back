@@ -19,7 +19,7 @@ public class SegurityConfiguration {
 	
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
-	
+
 	@Autowired
 	private AuthenticationProvider authenticationProvider;
 	
@@ -36,14 +36,10 @@ public class SegurityConfiguration {
 				"/img/**").permitAll()
 				.requestMatchers(HttpMethod.GET).permitAll()
 				.requestMatchers(HttpMethod.OPTIONS).permitAll()
-<<<<<<< Updated upstream
-				.requestMatchers("/auth/**").permitAll()
-=======
 				.requestMatchers("/api/auth/**").permitAll()
->>>>>>> Stashed changes
 				.anyRequest().authenticated()
 					)
-			.sessionManagement(sessionManager -> sessionManager 
+			.sessionManagement(sessionManager -> sessionManager
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

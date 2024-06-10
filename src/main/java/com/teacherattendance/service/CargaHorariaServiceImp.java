@@ -10,10 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.teacherattendance.dto.CargaHorariaDTO;
-<<<<<<< Updated upstream
-import com.teacherattendance.dto.error.ResourceNotFoundException;
-=======
->>>>>>> Stashed changes
 import com.teacherattendance.entity.CargaHoraria;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.entity.Modalidad;
@@ -46,10 +42,6 @@ public class CargaHorariaServiceImp {
 	}
 
 	public CargaHoraria guardarCargaHoraria(CargaHorariaDTO cargaHorariaDTO) {
-<<<<<<< Updated upstream
-		CargaHoraria cargaHoraria = new CargaHoraria(cargaHorariaDTO.getId(), cargaHorariaDTO.getDocente(),
-				cargaHorariaDTO.getMateria(), cargaHorariaDTO.getPeriodo(), cargaHorariaDTO.getModalidad());
-=======
 		Usuarios user = userService.obtenerUserPorId(cargaHorariaDTO.getId_docente());
 		Optional<Materia> materia = materiaService.obtenerMateria(cargaHorariaDTO.getId_materia());
 		Optional<Periodo> periodo = periodoService.obtenerPeriodo(cargaHorariaDTO.getId_periodo());
@@ -59,7 +51,6 @@ public class CargaHorariaServiceImp {
 		cargaHoraria.setMateria(materia.get());
 		cargaHoraria.setPeriodo(periodo.get());
 		cargaHoraria.setModalidad(modalidad.get());
->>>>>>> Stashed changes
 		return repositorio.save(cargaHoraria);
 	}
 
@@ -74,13 +65,6 @@ public class CargaHorariaServiceImp {
 	}
 
 	public CargaHoraria actualizarCargaHoraria(Long id, CargaHorariaDTO cargaHorariaDTO) {
-<<<<<<< Updated upstream
-		CargaHoraria cargaHoraria = obtenerCargaHorariaPorId(id);
-		cargaHoraria.setDocente(cargaHorariaDTO.getDocente());
-		cargaHoraria.setMateria(cargaHorariaDTO.getMateria());
-		cargaHoraria.setModalidad(cargaHorariaDTO.getModalidad());
-		cargaHoraria.setPeriodo(cargaHorariaDTO.getPeriodo());
-=======
 		Usuarios user = userService.obtenerUserPorId(cargaHorariaDTO.getId_docente());
 		Optional<Materia> materia = materiaService.obtenerMateria(cargaHorariaDTO.getId_materia());
 		Optional<Periodo> periodo = periodoService.obtenerPeriodo(cargaHorariaDTO.getId_periodo());
@@ -91,18 +75,13 @@ public class CargaHorariaServiceImp {
 		cargaHoraria.setMateria(materia.get());
 		cargaHoraria.setPeriodo(periodo.get());
 		cargaHoraria.setModalidad(modalidad.get());
->>>>>>> Stashed changes
 		return repositorio.save(cargaHoraria);
 	}
 
 	public void eliminarCargaHoraria(Long id) {
-<<<<<<< Updated upstream
-		repositorio.deleteById(id);
-
-=======
 		Optional<CargaHoraria> cargaHorariaOpt = obtenerCargaHoraria(id);
 		repositorio.delete(cargaHorariaOpt.get());
->>>>>>> Stashed changes
+
 	}
 
 	

@@ -1,85 +1,82 @@
 package com.teacherattendance.controllers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.teacherattendance.dto.DetalleCargaHorariaDTO;
+import com.teacherattendance.entity.DetalleCargaHoraria;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.service.DetalleCargaHorariaServiceImp;
+import com.teacherattendance.util.HttpStatusMessage;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.teacherattendance.dto.PeriodoDTO;
-import com.teacherattendance.entity.Periodo;
-import com.teacherattendance.reponse.ApiResponse;
-import com.teacherattendance.service.PeriodoServiceImp;
-import com.teacherattendance.util.HttpStatusMessage;
 
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/periodo")
-@CrossOrigin(origins = "http://localhost:4200")
-public class PeriodoController {
-	
+@RequestMapping("/detalle_carga_horaria")
+public class DetalleCargaHorariaController {
+
     @Autowired
-    private PeriodoServiceImp service;
+    private DetalleCargaHorariaServiceImp service;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Periodo>>> listarPeriodos() {
-        List<Periodo> periodos = service.findAll();
+    public ResponseEntity<ApiResponse<List<DetalleCargaHoraria>>> listarMaterias() {
+        List<DetalleCargaHoraria> detalleeCargasHorarias = service.findAll();
         return new ResponseEntity<>(
-                ApiResponse.<List<Periodo>>builder()
+                ApiResponse.<List<DetalleCargaHoraria>>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message(HttpStatusMessage.getMessage(HttpStatus.OK))
-                        .data(periodos)
+                        .data(detalleeCargasHorarias)
                         .build(),
                 HttpStatus.OK
         );
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<Periodo>>  guardarPeriodo(@Valid  @RequestBody PeriodoDTO periodoDTO, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse<DetalleCargaHoraria>>  guardarDetalleCargaHoraria(@Valid @RequestBody DetalleCargaHorariaDTO detalleCargaHorariaDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .errors(errors)
                             .build(),
                     HttpStatus.BAD_REQUEST
             );
         }
-        Periodo periodoCreado = service.guardarPeriodo(periodoDTO);
+        DetalleCargaHoraria detalleCargaHorariaCreada = service.guardarDetalleCargaHoraria(detalleCargaHorariaDTO);
         return new ResponseEntity<>(
-                ApiResponse.<Periodo>builder()
+                ApiResponse.<DetalleCargaHoraria>builder()
                         .statusCode(HttpStatus.CREATED.value())
                         .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-                        .data(periodoCreado)
+                        .data(detalleCargaHorariaCreada)
                         .build(),
                 HttpStatus.CREATED
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Periodo>>  obtenerPeriodo(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<DetalleCargaHoraria>>  obtenerDetalleCargaHoraria(@PathVariable Long id) {
         try {
-            Optional<Periodo> periodoOpt = service.obtenerPeriodo(id);
+            Optional<DetalleCargaHoraria> detalleCargaHorariaOpt = service.obtenerDetalleCargaHoraria(id);
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .statusCode(HttpStatus.OK.value())
                             .message(HttpStatusMessage.getMessage(HttpStatus.OK))
-                            .data(periodoOpt.get())
+                            .data(detalleCargaHorariaOpt.get())
                             .build(),
                     HttpStatus.OK
             );
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .statusCode(e.getStatusCode().value())
                             .message(e.getReason())
                             .build(),
@@ -89,15 +86,14 @@ public class PeriodoController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<Periodo>> actualizarPeriodo(@PathVariable Long id, @Valid @RequestBody PeriodoDTO periodoDTO, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse<DetalleCargaHoraria>> actualizarDetalleCargaHoraria(@PathVariable Long id, @Valid @RequestBody DetalleCargaHorariaDTO detalleCargaHorariaDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .errors(errors)
                             .build(),
                     HttpStatus.BAD_REQUEST
@@ -105,18 +101,18 @@ public class PeriodoController {
         }
 
         try {
-            Periodo periodoActualizada = service.actualizarPeriodo(id, periodoDTO);
+            DetalleCargaHoraria detalleCargaHorariaActualizada = service.actualizarDetalleCargaHoraria(id, detalleCargaHorariaDTO);
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .statusCode(HttpStatus.OK.value())
                             .message(HttpStatusMessage.getMessage(HttpStatus.OK))
-                            .data(periodoActualizada)
+                            .data(detalleCargaHorariaActualizada)
                             .build(),
                     HttpStatus.OK
             );
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(
-                    ApiResponse.<Periodo>builder()
+                    ApiResponse.<DetalleCargaHoraria>builder()
                             .statusCode(e.getStatusCode().value())
                             .message(e.getReason())
                             .build(),
@@ -126,10 +122,9 @@ public class PeriodoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> eliminarPeriodo(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> eliminarDetalleCargaHoraria(@PathVariable Long id) {
         try {
-            service.eliminarPeriodo(id);
+            service.eliminarDetalleCargaHoraria(id);
             return new ResponseEntity<>(
                     ApiResponse.<Void>builder()
                             .statusCode(HttpStatus.NO_CONTENT.value())

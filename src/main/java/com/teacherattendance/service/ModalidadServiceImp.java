@@ -1,23 +1,17 @@
 package com.teacherattendance.service;
 
 import java.util.List;
+import java.util.Optional;
 
-<<<<<<< Updated upstream
-=======
 import com.teacherattendance.dto.ModalidadDTO;
 import com.teacherattendance.util.HttpStatusMessage;
->>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-<<<<<<< Updated upstream
-
-import com.teacherattendance.dto.ModalidadDTO;
-import com.teacherattendance.dto.error.ResourceNotFoundException;
-=======
->>>>>>> Stashed changes
 import com.teacherattendance.entity.Modalidad;
 import com.teacherattendance.repository.ModalidadRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ModalidadServiceImp {
@@ -27,27 +21,49 @@ public class ModalidadServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Modalidad> findAll(){
-		return repositorio.findAll();
+		List<Modalidad> modalidades =  repositorio.findAll();
+		return modalidades;
 	}
 	
 	public Modalidad guardarModalidad(ModalidadDTO modalidadDTO) {
-		Modalidad modalidad = new Modalidad(modalidadDTO.getId(), modalidadDTO.getNombre(), modalidadDTO.getDescripcion());
-		return repositorio.save(modalidad);
-	}
-	
-	public Modalidad obtenerModalidad(Long id) {
-		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
-	}
-	
-	public Modalidad actualizarModalidad(Long id, ModalidadDTO modalidadDTO) {
-		Modalidad modalidad = obtenerModalidad(id);
+		Modalidad modalidad = new Modalidad();
 		modalidad.setNombre(modalidadDTO.getNombre());
 		modalidad.setDescripcion(modalidadDTO.getDescripcion());
 		return repositorio.save(modalidad);
 	}
 	
+	public Optional<Modalidad>  obtenerModalidad(Long id) {
+		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
+		if (!modalidadOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		return modalidadOpt;
+	}
+	
+	public Modalidad actualizarModalidad(Long id,ModalidadDTO modalidadDTO) {
+		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
+		if (!modalidadOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		modalidadDTO.setId(null);
+		Modalidad modalidad = modalidadOpt.get();
+		modalidad.setNombre(modalidadDTO.getNombre());
+		modalidad.setDescripcion(modalidadDTO.getDescripcion());
+        return repositorio.save(modalidad);
+	}
+	
 	public void eliminarModalidad(Long id) {
-		repositorio.deleteById(id);
+		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
+		if (!modalidadOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		repositorio.delete(modalidadOpt.get());
 	}
 
 }

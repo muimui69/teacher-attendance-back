@@ -1,18 +1,11 @@
 package com.teacherattendance.controllers;
 
 import java.util.List;
-<<<<<<< Updated upstream
-=======
 import java.util.Optional;
->>>>>>> Stashed changes
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< Updated upstream
-=======
 import org.springframework.context.support.DefaultMessageSourceResolvable;
->>>>>>> Stashed changes
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,13 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.teacherattendance.dto.LicenciaDTO;
 import com.teacherattendance.entity.Licencia;
-<<<<<<< Updated upstream
-import com.teacherattendance.service.LicenciaServiceImp;
-
-@RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/licencia")
-=======
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.service.LicenciaServiceImp;
 import com.teacherattendance.util.HttpStatusMessage;
@@ -45,46 +31,11 @@ import jakarta.validation.Valid;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/licencia")
->>>>>>> Stashed changes
 public class LicenciaController {
 	
 	@Autowired
 	private LicenciaServiceImp service;
 	
-<<<<<<< Updated upstream
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@GetMapping
-	public ResponseEntity<List<LicenciaDTO>> listarLicencia() {
-		List<Licencia> licencias = service.findAll();
-		List<LicenciaDTO> licenciaDTOs = licencias.stream()
-				.map(licencia -> modelMapper.map(licencia, LicenciaDTO.class)).collect(Collectors.toList());
-		return new ResponseEntity<>(licenciaDTOs, HttpStatus.OK);
-	}
-	
-	@PostMapping
-	public ResponseEntity<Licencia> guardarLicencia(@Validated @RequestBody LicenciaDTO licenciaDto) throws Exception{
-		return new ResponseEntity<>(service.guardarLicencia(licenciaDto), HttpStatus.OK); 
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<LicenciaDTO> obtenerLicencia(@PathVariable Long id) {
-		Licencia licencia =  service.obtenerLicencia(id);
-		LicenciaDTO licenciaDTO = modelMapper.map(licencia, LicenciaDTO.class);
-		return ResponseEntity.ok(licenciaDTO);
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<Licencia> actualizarLicencia(@PathVariable Long id,@RequestBody LicenciaDTO licenciaDTO) {
-		return new ResponseEntity<>(service.actualizarLicencia(id, licenciaDTO), HttpStatus.OK); 
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> eliminarLicencia(@PathVariable Long id) {
-		service.eliminarLicencia(id);
-		return ResponseEntity.noContent().build();
-=======
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<Licencia>>> listarLicencias() {
 		List<Licencia> licencias  = service.findAll();
@@ -200,7 +151,6 @@ public class LicenciaController {
 					e.getStatusCode()
 			);
 		}
->>>>>>> Stashed changes
 	}
 
 }

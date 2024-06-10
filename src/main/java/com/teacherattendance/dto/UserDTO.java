@@ -9,15 +9,11 @@ import jakarta.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-<<<<<<< Updated upstream
-@JsonIgnoreProperties(ignoreUnknown = true)
-=======
->>>>>>> Stashed changes
 public class UserDTO  {
 	
 	private Long id;
 
-    @NotEmpty(message = "ingrese un name")
+    @NotEmpty(message = "ingrese un nombre")
     private String nombre;
 
     @NotEmpty(message = "ingrese un apellido")
