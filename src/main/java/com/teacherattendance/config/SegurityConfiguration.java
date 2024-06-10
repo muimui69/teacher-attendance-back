@@ -36,7 +36,7 @@ public class SegurityConfiguration {
 				"/img/**").permitAll()
 				.requestMatchers(HttpMethod.GET).permitAll()
 				.requestMatchers(HttpMethod.OPTIONS).permitAll()
-				.requestMatchers("api/**").permitAll()
+				.requestMatchers("/api/auth/**").permitAll()
 				.anyRequest().authenticated()
 					)
 			.sessionManagement(sessionManager -> sessionManager

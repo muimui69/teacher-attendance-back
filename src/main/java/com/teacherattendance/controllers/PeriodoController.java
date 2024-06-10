@@ -1,15 +1,9 @@
 package com.teacherattendance.controllers;
 
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.teacherattendance.dto.CarreraDTO;
 import com.teacherattendance.dto.PeriodoDTO;
-import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.entity.Periodo;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.service.PeriodoServiceImp;
@@ -19,16 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import com.teacherattendance.dto.MateriaDTO;
-import com.teacherattendance.entity.Materia;
-import com.teacherattendance.service.MateriaServiceImp;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/periodo")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PeriodoController {
     @Autowired
     private PeriodoServiceImp service;
@@ -48,6 +40,7 @@ public class PeriodoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Periodo>>  guardarPeriodo(@Valid  @RequestBody PeriodoDTO periodoDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
@@ -95,6 +88,7 @@ public class PeriodoController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Periodo>> actualizarPeriodo(@PathVariable Long id, @Valid @RequestBody PeriodoDTO periodoDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -131,6 +125,7 @@ public class PeriodoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> eliminarPeriodo(@PathVariable Long id) {
         try {
             service.eliminarPeriodo(id);

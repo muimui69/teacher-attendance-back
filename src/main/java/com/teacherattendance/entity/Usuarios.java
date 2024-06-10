@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +30,7 @@ public class Usuarios implements UserDetails{
     
     private String apellido;
     
+    @Email(message = "El email debe ser válido")
     private String email;
     
     private String password; 

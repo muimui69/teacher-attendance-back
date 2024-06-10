@@ -14,17 +14,12 @@ import com.teacherattendance.dto.UserDTO;
 import com.teacherattendance.service.UserServiceImp;
 
 @RestController
-@RequestMapping("/si2")
+@RequestMapping("/auth")
 @CrossOrigin(origins = {"http://localhost:4200"})
 public class RegistroController {
 	
 	@Autowired
 	private UserServiceImp userService;
-	
-//	@ModelAttribute("usuario")
-//	public UserDTO returnUserRegistroDto() {
-//		return new UserDTO();
-//	}
 
 	@PostMapping(value = "login")
 	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
@@ -34,6 +29,11 @@ public class RegistroController {
 	@PostMapping(value = "register")
 	public ResponseEntity<AuthResponse> register(@RequestBody UserDTO userDto) {
 		return ResponseEntity.ok(userService.createUser(userDto));
+	}
+	
+	@PostMapping(value = "registerAdmin")
+	public ResponseEntity<AuthResponse> registerAdmin(@RequestBody UserDTO userDto) {
+		return ResponseEntity.ok(userService.createUserAdmin(userDto));
 	}
 
 }

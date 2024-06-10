@@ -1,13 +1,10 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.teacherattendance.dto.ModalidadDTO;
-import com.teacherattendance.entity.Materia;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
@@ -15,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.teacherattendance.entity.Modalidad;
@@ -23,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/modalidad")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ModalidadController {
 	
 	@Autowired
@@ -42,6 +41,7 @@ public class ModalidadController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Modalidad>> guardarModalidad(@Valid @RequestBody ModalidadDTO modalidadDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -89,6 +89,7 @@ public class ModalidadController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Modalidad>> actualizarModalidad(@PathVariable Long id,@Valid @RequestBody ModalidadDTO modalidadDTO,BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -124,6 +125,7 @@ public class ModalidadController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public  ResponseEntity<ApiResponse<Void>> eliminarModalidad(@PathVariable Long id) {
 		try {
 			service.eliminarModalidad(id);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,75 +21,76 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.teacherattendance.dto.AsistenciaDTO;
-import com.teacherattendance.entity.Asistencia;
+import com.teacherattendance.dto.CargaHorariaDTO;
+import com.teacherattendance.entity.CargaHoraria;
 import com.teacherattendance.reponse.ApiResponse;
-import com.teacherattendance.service.AsistenciaServiceImp;
+import com.teacherattendance.service.CargaHorariaServiceImp;
 import com.teacherattendance.util.HttpStatusMessage;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/asistencia")
+@RequestMapping("/carga-horaria")
 @CrossOrigin(origins = "http://localhost:4200")
-public class AsistenciaController {
+public class CargaHorariaController {
 	
 	@Autowired
-	private AsistenciaServiceImp service;
-	
+	private CargaHorariaServiceImp service;
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<Asistencia>>> listarMaterias() {
-		List<Asistencia> asistencias = service.findAll();
+	public ResponseEntity<ApiResponse<List<CargaHoraria>>> listarCargaHoraria() {
+		List<CargaHoraria> cargaHorarias = service.findAll();
 		return new ResponseEntity<>(
-				ApiResponse.<List<Asistencia>>builder()
+				ApiResponse.<List<CargaHoraria>>builder()
 						.statusCode(HttpStatus.OK.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-						.data(asistencias)
+						.data(cargaHorarias)
 						.build(),
 				HttpStatus.OK
 		);
 	}
 	
 	@PostMapping
-	public ResponseEntity<ApiResponse<Asistencia>>  guardarAsistencia(@Valid  @RequestBody AsistenciaDTO asistenciaDTO, BindingResult bindingResult) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public  ResponseEntity<ApiResponse<CargaHoraria>> guardarCargaHoraria(@Valid @RequestBody CargaHorariaDTO cargaHorariaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Asistencia asistenciaCreada = service.guardarAsistencia(asistenciaDTO);
+		CargaHoraria cargaHorariaCreado = service.guardarCargaHoraria(cargaHorariaDTO);
 		return new ResponseEntity<>(
-				ApiResponse.<Asistencia>builder()
+				ApiResponse.<CargaHoraria>builder()
 						.statusCode(HttpStatus.CREATED.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(asistenciaCreada)
+						.data(cargaHorariaCreado)
 						.build(),
 				HttpStatus.CREATED
 		);
 	}
 
+
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<Asistencia>>  obtenerAsistencia(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<CargaHoraria>> obtenerCargaHoraria(@PathVariable Long id) {
 		try {
-			Optional<Asistencia> asistenciaOpt = service.obtenerAsistencia(id);
+			Optional<CargaHoraria> cargaHorariaOpt = service.obtenerCargaHoraria(id);
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-							.data(asistenciaOpt.get())
+							.data(cargaHorariaOpt.get())
 							.build(),
 					HttpStatus.OK
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
@@ -97,34 +99,34 @@ public class AsistenciaController {
 		}
 	}
 
-
 	@PatchMapping("/{id}")
-	public ResponseEntity<ApiResponse<Asistencia>> actualizarAsistencia(@PathVariable Long id, 
-			@Valid @RequestBody AsistenciaDTO asistenciaDTO, BindingResult bindingResult) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<CargaHoraria>> actualizarCargaHoraria(@PathVariable Long id, @Valid @RequestBody CargaHorariaDTO cargaHorariaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
+
 		try {
-			Asistencia asistenciaActualizada = service.actualizarAsistencia(id, asistenciaDTO);
+			CargaHoraria cargaHorariaActualizada = service.actualizarCargaHoraria(id, cargaHorariaDTO);
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-							.data(asistenciaActualizada)
+							.data(cargaHorariaActualizada)
 							.build(),
 					HttpStatus.OK
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<Asistencia>builder()
+					ApiResponse.<CargaHoraria>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
@@ -134,9 +136,10 @@ public class AsistenciaController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse<Void>> eliminarAsistencia(@PathVariable Long id) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Void>> eliminarCargaHoraria(@PathVariable Long id) {
 		try {
-			service.eliminarAsistencia(id);
+			service.eliminarCargaHoraria(id);
 			return new ResponseEntity<>(
 					ApiResponse.<Void>builder()
 							.statusCode(HttpStatus.NO_CONTENT.value())
@@ -154,5 +157,6 @@ public class AsistenciaController {
 			);
 		}
 	}
+
 
 }

@@ -4,12 +4,8 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.teacherattendance.util.FechaInicioAntesDeFechaFin;
-import com.teacherattendance.util.FechaInicioAntesDeFechaFinValidator;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.*;
 
 

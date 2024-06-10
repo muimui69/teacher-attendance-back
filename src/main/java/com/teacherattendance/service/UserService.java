@@ -12,14 +12,16 @@ public interface UserService {
 	public List<Usuarios> listUser();
 
     public Long getUserById(String name);
+    
+    public Usuarios obtenerUserPorId(Long id);
 
     public AuthResponse createUser(UserDTO adminDto);
     
     public AuthResponse createUserAdmin(UserDTO adminDto);
 
-    public Usuarios patchAdmin(Long id, UserDTO adminDto);
+    public Usuarios updateUser(Long id, UserDTO adminDto);
     
     public AuthResponse login(LoginRequest loginRequest);
 
-//    void deleteAdmin(Long id);
+    void deleteUser(Long id);
 }

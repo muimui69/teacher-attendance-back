@@ -1,14 +1,10 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.teacherattendance.dto.MateriaDTO;
 import com.teacherattendance.dto.ModuloDTO;
-import com.teacherattendance.entity.Materia;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
@@ -16,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.teacherattendance.entity.Modulo;
@@ -24,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/modulo")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ModuloController {
 	
 	@Autowired
@@ -43,6 +41,7 @@ public class ModuloController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public  ResponseEntity<ApiResponse<Modulo>> guardarModulo(@Valid @RequestBody ModuloDTO moduloDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -90,6 +89,7 @@ public class ModuloController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Modulo>> actualizarModulo(@PathVariable Long id, @Valid @RequestBody ModuloDTO moduloDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -125,6 +125,7 @@ public class ModuloController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Void>>  eliminarModulo(@PathVariable Long id) {
 		try {
 			service.eliminarModulo(id);

@@ -1,7 +1,6 @@
 package com.teacherattendance.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teacherattendance.entity.Modulo;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;

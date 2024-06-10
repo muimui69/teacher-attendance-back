@@ -4,6 +4,7 @@ import com.teacherattendance.auth.AuthResponse;
 import com.teacherattendance.auth.LoginRequest;
 import com.teacherattendance.config.JwtService;
 import com.teacherattendance.dto.UserDTO;
+import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Roles;
 import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.repository.RolRepository;
@@ -50,6 +51,16 @@ public class UserServiceImp implements UserService {
 	            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 	        return usuario.getId();
 	}
+	
+	@Override
+	public Usuarios obtenerUserPorId(Long id) {
+		Optional<Usuarios> user = userRepository.findById(id);
+		if (user.isPresent()) {
+			return user.get();
+		}else {
+			throw new ResourceNotFoundException("El usuario no se encuentra");
+		}
+	}
 
 	@Override
 	public AuthResponse createUser(UserDTO userDto) {
@@ -65,7 +76,7 @@ public class UserServiceImp implements UserService {
 	
 	@Override
 	public AuthResponse createUserAdmin(UserDTO userDto) {
-		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_DOCENTE");
+		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_ADMIN");
 		Roles userRole = optionalUserRole.orElseGet(() -> rolRepository.save(new Roles ("ROLE_ADMIN")));
 		Set<Roles> roles = Collections.singleton(userRole);
 		Usuarios usuario = new Usuarios(userDto.getNombre(), 
@@ -86,8 +97,17 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-	public Usuarios patchAdmin(Long id, UserDTO adminDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public Usuarios updateUser(Long id, UserDTO userDto) {
+		Usuarios user = obtenerUserPorId(id);
+		user.setNombre(userDto.getNombre());
+		user.setApellido(userDto.getApellido());
+		user.setEmail(userDto.getEmail());
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public void deleteUser(Long id) {
+		userRepository.deleteById(id);
 	}
 }
