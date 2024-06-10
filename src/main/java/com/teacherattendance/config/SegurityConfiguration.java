@@ -36,7 +36,11 @@ public class SegurityConfiguration {
 				"/img/**").permitAll()
 				.requestMatchers(HttpMethod.GET).permitAll()
 				.requestMatchers(HttpMethod.OPTIONS).permitAll()
+<<<<<<< Updated upstream
 				.requestMatchers("/auth/**").permitAll()
+=======
+				.requestMatchers("/api/auth/**").permitAll()
+>>>>>>> Stashed changes
 				.anyRequest().authenticated()
 					)
 			.sessionManagement(sessionManager -> sessionManager 

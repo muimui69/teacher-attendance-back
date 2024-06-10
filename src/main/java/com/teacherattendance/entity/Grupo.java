@@ -18,14 +18,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Carrera {
+public class Grupo {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	
-	@NotNull(message = "El nombre de la carrera no puede ser nulo.")
-    @NotEmpty(message = "El nombre de la carrera no puede estar vacio.")
-	private String nombre;
+	@NotNull(message = "El nombre del grupo no puede ser nulo.")
+    @NotEmpty(message = "El nombre del grupo no puede estar vacio.")
+	private String nombre; 
 
 }

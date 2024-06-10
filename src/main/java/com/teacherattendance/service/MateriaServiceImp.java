@@ -1,15 +1,25 @@
 package com.teacherattendance.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
+=======
+import java.util.Optional;
+
+import com.teacherattendance.entity.Carrera;
+import com.teacherattendance.repository.CarreraRepository;
+import com.teacherattendance.util.HttpStatusMessage;
+>>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.dto.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.repository.MateriaRepository;
+<<<<<<< Updated upstream
+=======
+import org.springframework.web.server.ResponseStatusException;
+>>>>>>> Stashed changes
 
 @Service
 public class MateriaServiceImp {

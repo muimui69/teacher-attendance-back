@@ -1,7 +1,10 @@
 package com.teacherattendance.reponse;
 
+<<<<<<< Updated upstream
 import java.util.List;
 
+=======
+>>>>>>> Stashed changes
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 

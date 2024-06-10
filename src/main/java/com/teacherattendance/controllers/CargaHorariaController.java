@@ -1,6 +1,7 @@
 package com.teacherattendance.controllers;
 
 import java.util.List;
+<<<<<<< Updated upstream
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -9,6 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+=======
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+>>>>>>> Stashed changes
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,18 +30,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+<<<<<<< Updated upstream
 import com.teacherattendance.dto.CargaHorariaDTO;
 import com.teacherattendance.entity.CargaHoraria;
 import com.teacherattendance.service.CargaHorariaServiceImp;
 
 @RestController
 @RequestMapping("/api/cargaHoraria")
+=======
+import org.springframework.web.server.ResponseStatusException;
+
+import com.teacherattendance.dto.CargaHorariaDTO;
+import com.teacherattendance.entity.CargaHoraria;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.service.CargaHorariaServiceImp;
+import com.teacherattendance.util.HttpStatusMessage;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/carga-horaria")
+>>>>>>> Stashed changes
 @CrossOrigin(origins = "http://localhost:4200")
 public class CargaHorariaController {
 	
 	@Autowired
 	private CargaHorariaServiceImp service;
 	
+<<<<<<< Updated upstream
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -39,10 +67,24 @@ public class CargaHorariaController {
 		List<CargaHorariaDTO> cargaHorariaDTO = cargaHoraria.stream()
 				.map(carga -> modelMapper.map(carga, CargaHorariaDTO.class)).collect(Collectors.toList());
 		return new ResponseEntity<>(cargaHorariaDTO, HttpStatus.OK);
+=======
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<CargaHoraria>>> listarCargaHoraria() {
+		List<CargaHoraria> cargaHorarias = service.findAll();
+		return new ResponseEntity<>(
+				ApiResponse.<List<CargaHoraria>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(cargaHorarias)
+						.build(),
+				HttpStatus.OK
+		);
+>>>>>>> Stashed changes
 	}
 	
 	@PostMapping
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+<<<<<<< Updated upstream
 	public ResponseEntity<CargaHoraria> guardarCargaHoraria(@Validated @RequestBody CargaHorariaDTO cargaHorariaDTO) throws Exception{
 		return new ResponseEntity<>(service.guardarCargaHoraria(cargaHorariaDTO), HttpStatus.OK); 
 	}
@@ -52,19 +94,126 @@ public class CargaHorariaController {
 		CargaHoraria cargaHoraria =  service.obtenerCargaHorariaPorId(id);
 		CargaHorariaDTO cargaHorariaDTO = modelMapper.map(cargaHoraria, CargaHorariaDTO.class);
 		return ResponseEntity.ok(cargaHorariaDTO);
+=======
+	public  ResponseEntity<ApiResponse<CargaHoraria>> guardarCargaHoraria(@Valid @RequestBody CargaHorariaDTO cargaHorariaDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		CargaHoraria cargaHorariaCreado = service.guardarCargaHoraria(cargaHorariaDTO);
+		return new ResponseEntity<>(
+				ApiResponse.<CargaHoraria>builder()
+						.statusCode(HttpStatus.CREATED.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+						.data(cargaHorariaCreado)
+						.build(),
+				HttpStatus.CREATED
+		);
+	}
+
+
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<CargaHoraria>> obtenerCargaHoraria(@PathVariable Long id) {
+		try {
+			Optional<CargaHoraria> cargaHorariaOpt = service.obtenerCargaHoraria(id);
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(cargaHorariaOpt.get())
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+>>>>>>> Stashed changes
 	}
 
 	@PatchMapping("/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+<<<<<<< Updated upstream
 	public ResponseEntity<CargaHoraria> actualizarCargaHoraria(@PathVariable Long id,@RequestBody CargaHorariaDTO cargaHorariaDTO) {
 		return new ResponseEntity<>(service.actualizarCargaHoraria(id, cargaHorariaDTO), HttpStatus.OK);
+=======
+	public ResponseEntity<ApiResponse<CargaHoraria>> actualizarCargaHoraria(@PathVariable Long id, @Valid @RequestBody CargaHorariaDTO cargaHorariaDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+
+		try {
+			CargaHoraria cargaHorariaActualizada = service.actualizarCargaHoraria(id, cargaHorariaDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(cargaHorariaActualizada)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+>>>>>>> Stashed changes
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+<<<<<<< Updated upstream
 	public ResponseEntity<Void> eliminarCargaHoraria(@PathVariable Long id) {
 		service.eliminarCargaHoraria(id);
 		return ResponseEntity.noContent().build();
 	}
 
+=======
+	public ResponseEntity<ApiResponse<Void>> eliminarCargaHoraria(@PathVariable Long id) {
+		try {
+			service.eliminarCargaHoraria(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(HttpStatus.NO_CONTENT.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.NO_CONTENT))
+							.build(),
+					HttpStatus.NO_CONTENT
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+	}
+
+
+>>>>>>> Stashed changes
 }

@@ -7,7 +7,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+<<<<<<< Updated upstream
 import jakarta.validation.constraints.NotNull;
+=======
+>>>>>>> Stashed changes
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

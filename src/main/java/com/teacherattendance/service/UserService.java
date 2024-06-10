@@ -21,9 +21,17 @@ public interface UserService {
     
     public AuthResponse createUserAdmin(UserDTO adminDto);
 
+<<<<<<< Updated upstream
     public Usuarios updateAdmin(Long id, UserDTO adminDto);
     
     public AuthResponse login(LoginRequest loginRequest);
 
     public void deleteUser(Long id);
+=======
+    public Usuarios updateUser(Long id, UserDTO adminDto);
+    
+    public AuthResponse login(LoginRequest loginRequest);
+
+    void deleteUser(Long id);
+>>>>>>> Stashed changes
 }

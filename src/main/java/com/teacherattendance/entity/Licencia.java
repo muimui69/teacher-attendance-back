@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.teacherattendance.util.FutureOrPresentDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,6 +42,7 @@ public class Licencia {
 	
 	@DateTimeFormat(iso = ISO.DATE)
 	@NotNull(message = "Debe ingresar la fecha para que la solicita la licencia")
+	@FutureOrPresentDate(message = "La fecha debe ser hoy o en el futuro")
 	private LocalDate fecha;
 
 }

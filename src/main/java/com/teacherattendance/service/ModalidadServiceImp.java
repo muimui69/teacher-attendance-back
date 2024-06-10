@@ -2,12 +2,20 @@ package com.teacherattendance.service;
 
 import java.util.List;
 
+<<<<<<< Updated upstream
+=======
+import com.teacherattendance.dto.ModalidadDTO;
+import com.teacherattendance.util.HttpStatusMessage;
+>>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+<<<<<<< Updated upstream
 
 import com.teacherattendance.dto.ModalidadDTO;
 import com.teacherattendance.dto.error.ResourceNotFoundException;
+=======
+>>>>>>> Stashed changes
 import com.teacherattendance.entity.Modalidad;
 import com.teacherattendance.repository.ModalidadRepository;
 

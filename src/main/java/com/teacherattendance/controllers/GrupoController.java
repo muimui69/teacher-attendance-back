@@ -1,23 +1,15 @@
 package com.teacherattendance.controllers;
 
 import java.util.List;
-<<<<<<< Updated upstream
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-=======
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.teacherattendance.reponse.ApiResponse;
-import com.teacherattendance.util.HttpStatusMessage;
-import jakarta.validation.Valid;
->>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-<<<<<<< Updated upstream
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,127 +19,130 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-=======
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
->>>>>>> Stashed changes
+import org.springframework.web.server.ResponseStatusException;
 
-import com.teacherattendance.dto.MateriaDTO;
-import com.teacherattendance.entity.Materia;
-import com.teacherattendance.service.MateriaServiceImp;
+import com.teacherattendance.dto.GrupoDTO;
+import com.teacherattendance.entity.Grupo;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.service.GrupoServiceImp;
+import com.teacherattendance.util.HttpStatusMessage;
+
+import jakarta.validation.Valid;
 
 @RestController
-<<<<<<< Updated upstream
-@RequestMapping("/api/materia")
-=======
-@RequestMapping("/materia")
->>>>>>> Stashed changes
+@RequestMapping("/grupo")
 @CrossOrigin(origins = "http://localhost:4200")
-public class MateriaController {
-
-	@Autowired
-	private MateriaServiceImp service;
+public class GrupoController {
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private GrupoServiceImp service;
 	
 	@GetMapping
-	public ResponseEntity<List<MateriaDTO>> listarMateria() {
-		List<Materia> materias = service.findAll();
-		List<MateriaDTO> materiaDTOs = materias.stream()
-				.map(materia -> modelMapper.map(materia, MateriaDTO.class)).collect(Collectors.toList());
-		return new ResponseEntity<>(materiaDTOs, HttpStatus.OK);
+	public ResponseEntity<ApiResponse<List<Grupo>>> listarGrupos() {
+		List<Grupo> grupos = service.findAll();
+		return new ResponseEntity<>(
+				ApiResponse.<List<Grupo>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(grupos)
+						.build(),
+				HttpStatus.OK
+		);
 	}
-	
+
+
 	@PostMapping
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-<<<<<<< Updated upstream
-	public ResponseEntity<Materia> guardarMateria(@RequestBody MateriaDTO materiaDTO) {
-		return new ResponseEntity<>(service.guardarMateria(materiaDTO), HttpStatus.OK);
-=======
-	public ResponseEntity<ApiResponse<Materia>>  guardarMateria(@Valid  @RequestBody MateriaDTO materiaDTO, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponse<Grupo>> guardarGrupo(@Valid @RequestBody GrupoDTO grupoDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<Materia>builder()
+					ApiResponse.<Grupo>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Materia materiaCreada = service.guardarMateria(materiaDTO);
+		Grupo grupoCreado = service.guardarGrupo(grupoDTO);
 		return new ResponseEntity<>(
-				ApiResponse.<Materia>builder()
+				ApiResponse.<Grupo>builder()
 						.statusCode(HttpStatus.CREATED.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(materiaCreada)
+						.data(grupoCreado)
 						.build(),
 				HttpStatus.CREATED
 		);
->>>>>>> Stashed changes
 	}
+
 
 	@GetMapping("/{id}")
-	public ResponseEntity<MateriaDTO> obtenerMateria(@PathVariable Long id) {
-		Materia materia =  service.obtenerMateria(id);
-		MateriaDTO materiaDTO = modelMapper.map(materia, MateriaDTO.class);
-		return ResponseEntity.ok(materiaDTO);
-	}
-
-	@PatchMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-<<<<<<< Updated upstream
-	public ResponseEntity<Materia> actualizarMateria(@PathVariable Long id,@RequestBody MateriaDTO materiaDTO) {
-		return new ResponseEntity<>(service.actualizarMateria(id, materiaDTO), HttpStatus.OK);
-=======
-	public ResponseEntity<ApiResponse<Materia>> actualizarMateria(@PathVariable Long id, @Valid @RequestBody MateriaDTO materiaDTO, BindingResult bindingResult) {
-
-		if (bindingResult.hasErrors()) {
-			List<String> errors = bindingResult.getAllErrors().stream()
-					.map(DefaultMessageSourceResolvable::getDefaultMessage)
-					.collect(Collectors.toList());
-			return new ResponseEntity<>(
-					ApiResponse.<Materia>builder()
-							.errors(errors)
-							.build(),
-					HttpStatus.BAD_REQUEST
-			);
-		}
-
+	public ResponseEntity<ApiResponse<Grupo>> obtenerGrupo(@PathVariable Long id) {
 		try {
-			Materia materiaActualizada = service.actualizarMateria(id, materiaDTO);
+			Optional<Grupo> grupoOpt = service.obtenerGrupo(id);
 			return new ResponseEntity<>(
-					ApiResponse.<Materia>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-							.data(materiaActualizada)
+							.data(grupoOpt.get())
 							.build(),
 					HttpStatus.OK
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<Materia>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
 					e.getStatusCode()
 			);
 		}
->>>>>>> Stashed changes
 	}
+
+
+
+	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Grupo>> actualizarGrupo(@PathVariable Long id, @Valid @RequestBody GrupoDTO grupoDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Grupo>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		try {
+			Grupo grupoActualizado = service.actualizarGrupo(id, grupoDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Grupo>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(grupoActualizado)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Grupo>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+	}
+
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-<<<<<<< Updated upstream
-	public ResponseEntity<Void>  eliminarMateria(@PathVariable Long id) {
-		service.eliminarMateria(id);
-		return ResponseEntity.noContent().build();
-=======
-	public ResponseEntity<ApiResponse<Void>> eliminarMateria(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Void>> eliminarGrupo(@PathVariable Long id) {
 		try {
-			service.eliminarMateria(id);
+			service.eliminarGrupo(id);
 			return new ResponseEntity<>(
 					ApiResponse.<Void>builder()
 							.statusCode(HttpStatus.NO_CONTENT.value())
@@ -164,7 +159,6 @@ public class MateriaController {
 					e.getStatusCode()
 			);
 		}
->>>>>>> Stashed changes
 	}
-	
+
 }
