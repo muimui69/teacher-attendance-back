@@ -1,14 +1,17 @@
 package com.teacherattendance.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.teacherattendance.util.HttpStatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.teacherattendance.dto.error.ResourceNotFoundException;
+import com.teacherattendance.dto.PeriodoDTO;
 import com.teacherattendance.entity.Periodo;
 import com.teacherattendance.repository.PeriodoRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PeriodoServiceImp {
@@ -18,23 +21,56 @@ public class PeriodoServiceImp {
 	
 	@Transactional(readOnly = true)
 	public List<Periodo> findAll(){
-		return (List<Periodo>) repositorio.findAll();
+		List<Periodo> periodos = repositorio.findAll();
+		return periodos;
 	}
-	
-	public Periodo guardarPeriodo(Periodo periodo) {
+
+	public Periodo guardarPeriodo(PeriodoDTO periodoDTO) {
+		Periodo periodo = new Periodo();
+		periodo.setNombre(periodoDTO.getNombre());
+		periodo.setGestion(periodoDTO.getGestion());
+		periodo.setFecha_inicio(periodoDTO.getFecha_inicio());
+		periodo.setFecha_fin(periodoDTO.getFecha_fin());
 		return repositorio.save(periodo);
 	}
-	
-	public Periodo obtenerPeriodo(Long id) {
-		return repositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe"));
+
+
+	public Optional<Periodo> obtenerPeriodo(Long id) {
+		Optional<Periodo> periodoOpt = repositorio.findById(id);
+		if (!periodoOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		return periodoOpt;
 	}
-	
-	public Periodo actualizarPeriodo(Periodo periodo) {
+
+	public Periodo actualizarPeriodo(Long id, PeriodoDTO periodoDTO){
+		Optional<Periodo> periodoOpt = repositorio.findById(id);
+		if (!periodoOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "No existe el periodo con el id " + id
+			);
+		}
+
+		periodoDTO.setId(null);
+		Periodo periodo = periodoOpt.get();
+		periodo.setNombre(periodoDTO.getNombre());
+		periodo.setGestion(periodoDTO.getGestion());
+		periodo.setFecha_inicio(periodoDTO.getFecha_inicio());
+		periodo.setFecha_fin(periodoDTO.getFecha_fin());
 		return repositorio.save(periodo);
 	}
-	
-	public void eliminarPeriodo(Periodo periodo) {
-		repositorio.delete(periodo);
+
+
+	public void eliminarPeriodo(Long id) {
+		Optional<Periodo> periodoOpt = repositorio.findById(id);
+		if (!periodoOpt.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+			);
+		}
+		repositorio.delete(periodoOpt.get());
 	}
 
 }

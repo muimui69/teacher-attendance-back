@@ -2,64 +2,120 @@ package com.teacherattendance.controllers;
 
 import com.teacherattendance.dto.UserDTO;
 import com.teacherattendance.entity.Usuarios;
+import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.service.UserService;
-import org.modelmapper.ModelMapper;
+import com.teacherattendance.util.HttpStatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/user")
+// @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
+	
+	@Autowired
+    private UserService service;
 
-//    private final UserService adminService;
-//    private final ModelMapper modelMapper;
-//
-//    @Autowired
-//    public UserController(UserService adminService, ModelMapper modelMapper) {
-//        this.adminService = adminService;
-//        this.modelMapper = modelMapper;
-//    }
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<Usuarios>>> listarUsuarios() {
+		List<Usuarios> user = service.listUsuarios();
+		return new ResponseEntity<>(
+				ApiResponse.<List<Usuarios>>builder()
+						.statusCode(HttpStatus.OK.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+						.data(user)
+						.build(),
+				HttpStatus.OK
+		);
+	}
 
-//    @GetMapping
-//    public ResponseEntity<List<AdminDTO>> getAllAdmins() {
-//        List<AdminEntity> admins = adminService.ge();
-//        List<AdminDTO> adminDtos = admins.stream()
-//                .map(admin -> modelMapper.map(admin, AdminDTO.class))
-//                .collect(Collectors.toList());
-//        return new ResponseEntity<>(adminDtos, HttpStatus.OK);
-//    }
+    
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<Usuarios>> obtenerUsuario(@PathVariable Long id) {
+		try {
+			Usuarios usuariosOpt = service.obtenerUserPorId(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Usuarios>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(usuariosOpt)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Usuarios>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+	}
+    
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<UserDTO> getAdminById(@PathVariable("id") Long id) {
-//        Usuarios admin = adminService.getUserById(id);
-//        UserDTO adminDto = modelMapper.map(admin, UserDTO.class);
-//        return new ResponseEntity<>(adminDto, HttpStatus.OK);
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<UserDTO> createAdmin(@Valid @RequestBody UserDTO adminDto) {
-//        Usuarios createdAdmin = adminService.createAdmin(adminDto);
-//        UserDTO createdAdminDto = modelMapper.map(createdAdmin, UserDTO.class);
-//        return new ResponseEntity<>(createdAdminDto, HttpStatus.CREATED);
-//    }
+	@PatchMapping("/{id}")
+	public ResponseEntity<ApiResponse<Usuarios>>actualizarUsuario(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage)
+					.collect(Collectors.toList());
+			return new ResponseEntity<>(
+					ApiResponse.<Usuarios>builder()
+							.errors(errors)
+							.build(),
+					HttpStatus.BAD_REQUEST
+			);
+		}
+		try {
+			Usuarios usuarioActualizado = service.updateUser(id, userDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Usuarios>builder()
+							.statusCode(HttpStatus.OK.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
+							.data(usuarioActualizado)
+							.build(),
+					HttpStatus.OK
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Usuarios>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+	}
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<UserDTO> updateAdmin(@PathVariable("id") Long id, @Valid @RequestBody UserDTO adminDto) {
-//        Usuarios patchAdmin = adminService.patchAdmin(id, adminDto);
-//        UserDTO patchAdminDto = modelMapper.map(patchAdmin, UserDTO.class);
-//        return new ResponseEntity<>(patchAdminDto, HttpStatus.OK);
-//    }
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteAdmin(@PathVariable("id") Long id) {
-//        adminService.deleteAdmin(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ApiResponse<Void>> eliminarUsuario(@PathVariable Long id) {
+		try {
+			service.deleteUser(id);
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(HttpStatus.NO_CONTENT.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.NO_CONTENT))
+							.build(),
+					HttpStatus.NO_CONTENT
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Void>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
+	}
 }

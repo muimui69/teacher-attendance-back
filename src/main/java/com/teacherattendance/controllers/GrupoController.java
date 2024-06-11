@@ -3,90 +3,95 @@ package com.teacherattendance.controllers;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.teacherattendance.reponse.ApiResponse;
-import com.teacherattendance.util.HttpStatusMessage;
-import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import com.teacherattendance.dto.AulaDTO;
-import com.teacherattendance.entity.Aula;
-import com.teacherattendance.service.AulaServiceImp;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.teacherattendance.dto.GrupoDTO;
+import com.teacherattendance.entity.Grupo;
+import com.teacherattendance.reponse.ApiResponse;
+import com.teacherattendance.service.GrupoServiceImp;
+import com.teacherattendance.util.HttpStatusMessage;
+
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/aula")
-public class AulaController {
+@RequestMapping("/grupo")
+// @CrossOrigin(origins = "http://localhost:4200")
+public class GrupoController {
 	
 	@Autowired
-	private AulaServiceImp service;
+	private GrupoServiceImp service;
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<Aula>>>listarAula() {
-		List<Aula> aulas = service.findAll();
+	public ResponseEntity<ApiResponse<List<Grupo>>> listarGrupos() {
+		List<Grupo> grupos = service.findAll();
 		return new ResponseEntity<>(
-				ApiResponse.<List<Aula>>builder()
+				ApiResponse.<List<Grupo>>builder()
 						.statusCode(HttpStatus.OK.value())
 						.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-						.data(aulas)
+						.data(grupos)
 						.build(),
 				HttpStatus.OK
 		);
 	}
-	
+
+
 	@PostMapping
-	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Grupo>> guardarGrupo(@Valid @RequestBody GrupoDTO grupoDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		try {
-			Aula aulaCreada = service.guardarAula(aulaDto);
-			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
-							.statusCode(HttpStatus.CREATED.value())
-							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-							.data(aulaCreada)
-							.build(),
-					HttpStatus.CREATED
-			);
-		} catch (ResponseStatusException e) {
-			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
-							.statusCode(e.getStatusCode().value())
-							.message(e.getReason())
-							.build(),
-					e.getStatusCode()
-			);
-		}
+		Grupo grupoCreado = service.guardarGrupo(grupoDTO);
+		return new ResponseEntity<>(
+				ApiResponse.<Grupo>builder()
+						.statusCode(HttpStatus.CREATED.value())
+						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+						.data(grupoCreado)
+						.build(),
+				HttpStatus.CREATED
+		);
 	}
+
 
 	@GetMapping("/{id}")
-	public  ResponseEntity<ApiResponse<Aula>> obtenerAula(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Grupo>> obtenerGrupo(@PathVariable Long id) {
 		try {
-	   		Optional<Aula> aulaOpt = service.obtenerAula(id);
+			Optional<Grupo> grupoOpt = service.obtenerGrupo(id);
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-							.data(aulaOpt.get())
+							.data(grupoOpt.get())
 							.build(),
 					HttpStatus.OK
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
@@ -95,33 +100,35 @@ public class AulaController {
 		}
 	}
 
+
+
 	@PatchMapping("/{id}")
-	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id, @Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Grupo>> actualizarGrupo(@PathVariable Long id, @Valid @RequestBody GrupoDTO grupoDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
 					.collect(Collectors.toList());
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.errors(errors)
 							.build(),
 					HttpStatus.BAD_REQUEST
 			);
 		}
-
 		try {
-			Aula aulaActualizada = service.actualizarAula(id, aulaDto);
+			Grupo grupoActualizado = service.actualizarGrupo(id, grupoDTO);
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(HttpStatus.OK.value())
 							.message(HttpStatusMessage.getMessage(HttpStatus.OK))
-							.data(aulaActualizada)
+							.data(grupoActualizado)
 							.build(),
 					HttpStatus.OK
 			);
 		} catch (ResponseStatusException e) {
 			return new ResponseEntity<>(
-					ApiResponse.<Aula>builder()
+					ApiResponse.<Grupo>builder()
 							.statusCode(e.getStatusCode().value())
 							.message(e.getReason())
 							.build(),
@@ -130,10 +137,12 @@ public class AulaController {
 		}
 	}
 
+
 	@DeleteMapping("/{id}")
-	public  ResponseEntity<ApiResponse<Void>> eliminarAula(@PathVariable Long id) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Void>> eliminarGrupo(@PathVariable Long id) {
 		try {
-			service.eliminarAula(id);
+			service.eliminarGrupo(id);
 			return new ResponseEntity<>(
 					ApiResponse.<Void>builder()
 							.statusCode(HttpStatus.NO_CONTENT.value())

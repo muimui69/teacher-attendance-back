@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.teacherattendance.entity.DetalleCargaHoraria;
+import com.teacherattendance.entity.Grupo;
 
 @Repository
-public interface DCargaHorariaRepository extends JpaRepository<DetalleCargaHoraria, Long> {
+public interface GrupoRepository extends JpaRepository<Grupo, Long>{
 	
-	public List<DetalleCargaHoraria> findAll();
-	
+	public List<Grupo> findAll();
+
 }

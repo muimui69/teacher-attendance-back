@@ -2,11 +2,8 @@ package com.teacherattendance;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-//import org.springframework.context.annotation.Import;
-//
-import com.teacherattendance.config.WebConfig;
 import org.springframework.context.annotation.Import;
-
+import com.teacherattendance.config.WebConfig;
 
 @SpringBootApplication
 @Import(WebConfig.class)

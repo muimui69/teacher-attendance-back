@@ -1,6 +1,6 @@
 package com.teacherattendance.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -29,17 +29,22 @@ public class DetalleCargaHoraria {
     private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_cargaHoraria")
+	@JoinColumn(name = "id_carga_horaria")
 	private CargaHoraria cargaHoraria;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_grupo")
+	private Grupo grupo;
 
 	@ManyToOne
 	@JoinColumn(name = "id_aula")
 	private Aula aula;
 	
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime inicio;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+	private LocalTime hora_inicio;
 	
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime fin;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+	private LocalTime hora_fin;
+
 	
 }

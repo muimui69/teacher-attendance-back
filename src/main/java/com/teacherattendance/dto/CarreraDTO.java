@@ -1,6 +1,5 @@
 package com.teacherattendance.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.validation.constraints.*;
@@ -18,7 +17,6 @@ public class CarreraDTO {
 
     @NotNull(message = "El nombre de la carrera no puede ser nulo.")
     @NotEmpty(message = "El nombre de la carrera no puede estar vacio.")
-    @Pattern(regexp = "^[^\\d]*$", message = "El nombre de la carrera no debe contener números.")
 	private String nombre;
 
 }

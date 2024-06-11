@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,14 +18,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Modulo {
+public class Grupo {
 	
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    private int numero;
-    
-    private String ubicacion;
+	
+	@NotNull(message = "El nombre del grupo no puede ser nulo.")
+    @NotEmpty(message = "El nombre del grupo no puede estar vacio.")
+	private String nombre; 
 
 }
