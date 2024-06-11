@@ -2,33 +2,31 @@ package com.teacherattendance.dto;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.teacherattendance.util.FechaInicioAntesDeFechaFin;
-import com.teacherattendance.util.FechaInicioAntesDeFechaFinValidator;
-import jakarta.validation.constraints.Future;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.*;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class PeriodoDTO {
 
     private Long id;
 
-	@NotNull(message = "La fecha de inicio no puede ser nula.")
-	private LocalDate fecha_inicio;
+    @DateTimeFormat(iso = ISO.DATE)
+    @NotNull(message = "Debe ingresar la feha del inicio")
+    private LocalDate fecha_inicio;
 
-
-	@NotNull(message = "La fecha de fin no puede ser nula.")
-	private LocalDate fecha_fin;
+    @DateTimeFormat(iso = ISO.DATE)
+    @NotNull(message = "Debe ingresar la feha del fin")
+    private LocalDate fecha_fin;
 
 	@NotNull(message = "La gestion del periodo no puede ser nulo.")
 	private int gestion;
@@ -36,5 +34,6 @@ public class PeriodoDTO {
 	@NotNull(message = "El nombre del periodo no puede ser nulo.")
 	@NotEmpty(message = "El nombre del periodo no puede estar vacio.")
 	private String nombre;
+	
 	
 }

@@ -2,7 +2,6 @@ package com.teacherattendance.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CarreraDTO {
-
-    private Long id;
-
-    @NotNull(message = "El nombre de la carrera no puede ser nulo.")
-    @NotEmpty(message = "El nombre de la carrera no puede estar vacio.")
+public class RolesDTO {
+	
+	private Long id;
 	private String nombre;
 
 }

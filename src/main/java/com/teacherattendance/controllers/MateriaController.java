@@ -1,13 +1,9 @@
 package com.teacherattendance.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.teacherattendance.dto.CarreraDTO;
-import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.reponse.ApiResponse;
 import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
@@ -15,9 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
 import com.teacherattendance.dto.MateriaDTO;
 import com.teacherattendance.entity.Materia;
 import com.teacherattendance.service.MateriaServiceImp;
@@ -25,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/materia")
+// @CrossOrigin(origins = "http://localhost:4200")
 public class MateriaController {
 
 	@Autowired
@@ -44,6 +49,7 @@ public class MateriaController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Materia>>  guardarMateria(@Valid  @RequestBody MateriaDTO materiaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -90,9 +96,10 @@ public class MateriaController {
 		}
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<ApiResponse<Materia>> actualizarMateria(@PathVariable Long id, @Valid @RequestBody MateriaDTO materiaDTO, BindingResult bindingResult) {
 
+	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ApiResponse<Materia>> actualizarMateria(@PathVariable Long id, @Valid @RequestBody MateriaDTO materiaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
 					.map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -127,6 +134,7 @@ public class MateriaController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Void>> eliminarMateria(@PathVariable Long id) {
 		try {
 			service.eliminarMateria(id);

@@ -1,19 +1,16 @@
 package com.teacherattendance.reponse;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-
 public class ApiResponse<T> {
     private Integer  statusCode;
     private String message;

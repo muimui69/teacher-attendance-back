@@ -1,12 +1,6 @@
 package com.teacherattendance.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teacherattendance.entity.Materia;
-import com.teacherattendance.entity.Modalidad;
-import com.teacherattendance.entity.Modulo;
-import com.teacherattendance.entity.Periodo;
-import com.teacherattendance.entity.Usuarios;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,17 +8,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CargaHorariaDTO {
 	
     private Long id;
 	
-	private Usuarios docente;
+    @NotNull(message = "El id del docente no puede ser nulo.")
+	private Long id_docente;
 	
-	private Materia materia;
+	@NotNull(message = "El id de la materia no puede ser nulo.")
+	private Long id_materia;
 	
-	private Periodo periodo;
+	@NotNull(message = "El id del periodo no puede ser nulo.")
+	private Long id_periodo;
 	
-	private Modalidad modalidad;
+	@NotNull(message = "El id de la modalidad no puede ser nulo.")
+	private Long id_modalidad;
 
 }

@@ -1,14 +1,11 @@
 package com.teacherattendance.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class AulaDTO {
@@ -21,5 +18,4 @@ public class AulaDTO {
 	@NotNull(message = "El id de la carrera no puede ser nulo.")
 	private Long moduloId;
 	
-
 }

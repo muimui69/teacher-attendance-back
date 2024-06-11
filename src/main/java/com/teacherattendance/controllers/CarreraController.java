@@ -12,20 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import com.teacherattendance.dto.CarreraDTO;
 import com.teacherattendance.service.CarreraServiceImp;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/carrera")
+// @CrossOrigin(origins = "http://localhost:4200")
 public class CarreraController {
 	
 	@Autowired
 	private CarreraServiceImp service;
-
+	
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<Carrera>>> listarCarreras() {
 		List<Carrera> carreras = service.findAll();
@@ -41,6 +42,7 @@ public class CarreraController {
 
 
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Carrera>> guardarCarrera(@Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -91,6 +93,7 @@ public class CarreraController {
 
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Carrera>> actualizarCarrera(@PathVariable Long id, @Valid @RequestBody CarreraDTO carreraDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -127,6 +130,7 @@ public class CarreraController {
 
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Void>> eliminarCarrera(@PathVariable Long id) {
 		try {
 			service.eliminarCarrera(id);

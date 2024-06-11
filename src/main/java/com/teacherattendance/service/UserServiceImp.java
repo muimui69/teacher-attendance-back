@@ -4,11 +4,13 @@ import com.teacherattendance.auth.AuthResponse;
 import com.teacherattendance.auth.LoginRequest;
 import com.teacherattendance.config.JwtService;
 import com.teacherattendance.dto.UserDTO;
+import com.teacherattendance.dto.error.ResourceNotFoundException;
 import com.teacherattendance.entity.Roles;
 import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.repository.RolRepository;
 import com.teacherattendance.repository.UserRepository;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,10 +18,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service 
 public class UserServiceImp implements UserService {
@@ -38,9 +42,20 @@ public class UserServiceImp implements UserService {
 
 	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired 
+	private ModelMapper modelMapper;
 
 	@Override
-	public List<Usuarios> listUser() {
+	public List<UserDTO> listUser() {
+		List<Usuarios> user = userRepository.findAll();
+        return user.stream()
+                .map(usuario -> modelMapper.map(usuario, UserDTO.class))
+                .collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<Usuarios> listUsuarios() {
 		return userRepository.findAll();
 	}
 
@@ -49,6 +64,16 @@ public class UserServiceImp implements UserService {
 		Usuarios usuario = userRepository.findByEmail(name)
 	            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 	        return usuario.getId();
+	}
+	
+	@Override
+	public Usuarios obtenerUserPorId(Long id) {
+		Optional<Usuarios> user = userRepository.findById(id);
+		if (user.isPresent()) {
+			return user.get();
+		}else {
+			throw new ResourceNotFoundException("El usuario no se encuentra");
+		}
 	}
 
 	@Override
@@ -65,7 +90,7 @@ public class UserServiceImp implements UserService {
 	
 	@Override
 	public AuthResponse createUserAdmin(UserDTO userDto) {
-		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_DOCENTE");
+		Optional<Roles> optionalUserRole = rolRepository.findByNombre("ROLE_ADMIN");
 		Roles userRole = optionalUserRole.orElseGet(() -> rolRepository.save(new Roles ("ROLE_ADMIN")));
 		Set<Roles> roles = Collections.singleton(userRole);
 		Usuarios usuario = new Usuarios(userDto.getNombre(), 
@@ -86,8 +111,17 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-	public Usuarios patchAdmin(Long id, UserDTO adminDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public Usuarios updateUser(Long id, UserDTO userDto) {
+		Usuarios user = obtenerUserPorId(id);
+		user.setNombre(userDto.getNombre());
+		user.setApellido(userDto.getApellido());
+		user.setEmail(userDto.getEmail());
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public void deleteUser(Long id) {
+		userRepository.deleteById(id);
 	}
 }

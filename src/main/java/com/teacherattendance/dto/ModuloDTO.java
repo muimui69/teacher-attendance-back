@@ -1,7 +1,6 @@
 package com.teacherattendance.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teacherattendance.entity.Modulo;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,5 +24,6 @@ public class ModuloDTO {
     @NotNull(message = "El numero del modulo no puede ser nulo.")
     @Min( value = 1, message = "El numero del modulo debe ser positivo")
     private int numero;
+   
 
 }
