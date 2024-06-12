@@ -39,7 +39,11 @@ public class DetalleCargaHoraria {
 	@ManyToOne
 	@JoinColumn(name = "id_aula")
 	private Aula aula;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "id_dia")
+	private Dias dias;
+
 	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	private LocalTime hora_inicio;
 	

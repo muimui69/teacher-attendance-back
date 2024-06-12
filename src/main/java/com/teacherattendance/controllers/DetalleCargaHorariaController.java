@@ -25,9 +25,23 @@ public class DetalleCargaHorariaController {
     @Autowired
     private DetalleCargaHorariaServiceImp service;
 
+
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DetalleCargaHoraria>>> listarMaterias() {
+    public ResponseEntity<ApiResponse<List<DetalleCargaHoraria>>> listarDetalleCargaHoraria() {
         List<DetalleCargaHoraria> detalleeCargasHorarias = service.findAll();
+        return new ResponseEntity<>(
+                ApiResponse.<List<DetalleCargaHoraria>>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message(HttpStatusMessage.getMessage(HttpStatus.OK))
+                        .data(detalleeCargasHorarias)
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/docente/{idDocente}")
+    public ResponseEntity<ApiResponse<List<DetalleCargaHoraria>>> listarDetalleCargaHorariaPorDocente(@PathVariable Long idDocente) {
+        List<DetalleCargaHoraria> detalleeCargasHorarias = service.detalleCargaHorariaPorDocente(idDocente);
         return new ResponseEntity<>(
                 ApiResponse.<List<DetalleCargaHoraria>>builder()
                         .statusCode(HttpStatus.OK.value())

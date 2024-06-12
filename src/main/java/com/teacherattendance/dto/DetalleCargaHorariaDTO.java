@@ -38,4 +38,7 @@ public class DetalleCargaHorariaDTO {
     @NotNull(message = "El id_grupo del detalle carga horaria no puede ser nulo.")
     private Long grupoId;
 
+    @NotNull(message = "El id_dia del detalle carga horaria no puede ser nulo.")
+    private Long diaId;
+
 }
