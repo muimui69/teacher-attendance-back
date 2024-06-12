@@ -65,15 +65,25 @@ public class DetalleCargaHorariaController {
                     HttpStatus.BAD_REQUEST
             );
         }
-        DetalleCargaHoraria detalleCargaHorariaCreada = service.guardarDetalleCargaHoraria(detalleCargaHorariaDTO);
-        return new ResponseEntity<>(
-                ApiResponse.<DetalleCargaHoraria>builder()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-                        .data(detalleCargaHorariaCreada)
-                        .build(),
-                HttpStatus.CREATED
-        );
+        try {
+            DetalleCargaHoraria detalleCargaHorariaCreada = service.guardarDetalleCargaHoraria(detalleCargaHorariaDTO);
+            return new ResponseEntity<>(
+                    ApiResponse.<DetalleCargaHoraria>builder()
+                            .statusCode(HttpStatus.CREATED.value())
+                            .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+                            .data(detalleCargaHorariaCreada)
+                            .build(),
+                    HttpStatus.CREATED
+            );
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(
+                    ApiResponse.<DetalleCargaHoraria>builder()
+                            .statusCode(e.getStatusCode().value())
+                            .message(e.getReason())
+                            .build(),
+                    e.getStatusCode()
+            );
+        }
     }
 
     @GetMapping("/{id}")

@@ -8,5 +8,8 @@ import java.util.List;
 
 @Repository
 public interface DetalleCargaHorariaRepository  extends JpaRepository<DetalleCargaHoraria, Long> {
+
     public List<DetalleCargaHoraria> findAll();
+    List<DetalleCargaHoraria> findByAulaIdAndDiasId(Long aulaId, Long diaId);
+
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,6 +52,25 @@ public class DetalleCargaHorariaServiceImp {
         Optional<CargaHoraria> cargaHorariaOpt = cargaHorariaService.obtenerCargaHoraria(detalleCargaHorariaDTO.getCargaHorariaId());
         Optional<Grupo> grupoOpt = grupoService.obtenerGrupo(detalleCargaHorariaDTO.getGrupoId());
         Optional<Dias> diasOpt = diasService.obtenerDia(detalleCargaHorariaDTO.getDiaId());
+
+
+        List<DetalleCargaHoraria> detallesExistentes = repositorio.findByAulaIdAndDiasId(aulaOpt.get().getId(), diasOpt.get().getId());
+
+        LocalTime horaInicioNueva = detalleCargaHorariaDTO.getHora_inicio();
+        LocalTime horaFinNueva = detalleCargaHorariaDTO.getHora_fin();
+
+        for (DetalleCargaHoraria detalleExistente : detallesExistentes) {
+            LocalTime horaInicioExistente = detalleExistente.getHora_inicio();
+            LocalTime horaFinExistente = detalleExistente.getHora_fin();
+            Dias diaExistente = detalleExistente.getDias();
+
+            if (diaExistente.getId().equals(diasOpt.get().getId())) {
+                if (horaInicioNueva.isBefore(horaFinExistente) && horaFinNueva.isAfter(horaInicioExistente)) {
+                    throw new ResponseStatusException( HttpStatus.BAD_REQUEST,"El horario se superpone con un horario existente.");
+                }
+            }
+        }
+
         DetalleCargaHoraria detalleCargaHoraria = new DetalleCargaHoraria();
         detalleCargaHoraria.setHora_inicio(detalleCargaHorariaDTO.getHora_inicio());
         detalleCargaHoraria.setHora_fin(detalleCargaHorariaDTO.getHora_fin());

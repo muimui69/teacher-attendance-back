@@ -99,14 +99,27 @@ public class UserServiceImp implements UserService {
 		userRepository.save(usuario);
 		return AuthResponse.builder().token(jwtService.getToken(usuario)).build();
 	}
-	
+
+	public Usuarios getUser(String email) {
+		Usuarios usuario = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+		return usuario;
+	}
+
+
 	@Override
 	public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         UserDetails user=userRepository.findByEmail(loginRequest.getUsername()).orElseThrow();
         String token=jwtService.getToken(user);
+		Usuarios userDetails = this.getUser(user.getUsername());
         return AuthResponse.builder()
             .token(token)
+			.email(userDetails.getEmail())
+				.role(userDetails.getRoles().iterator().next())
+				.nombre(userDetails.getNombre())
+				.apellido(userDetails.getApellido())
+				.id(userDetails.getId())
             .build();
 	}
 
