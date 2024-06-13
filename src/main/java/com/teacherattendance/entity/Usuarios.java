@@ -35,6 +35,11 @@ public class Usuarios implements UserDetails{
     
     private String password; 
     
+    private boolean activo;
+    private boolean cuentaNoExpirada;
+    private boolean cuentaNoBloqueada;
+    private boolean credencialesNoExpiradas;
+    
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
     		name = "user_rol",
@@ -50,6 +55,10 @@ public class Usuarios implements UserDetails{
 		this.email = email;
 		this.password = password;
 		this.roles = roles;
+        this.activo = true;
+        this.cuentaNoExpirada = true;
+        this.cuentaNoBloqueada = true; 
+        this.credencialesNoExpiradas = true;  
 	}
 
 	@Override
@@ -66,22 +75,22 @@ public class Usuarios implements UserDetails{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return cuentaNoExpirada;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return cuentaNoBloqueada;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return credencialesNoExpiradas;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return activo;
 	}
 
 }

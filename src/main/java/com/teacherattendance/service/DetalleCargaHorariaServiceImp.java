@@ -27,6 +27,9 @@ public class DetalleCargaHorariaServiceImp {
     
     @Autowired
     private GrupoServiceImp grupoService;
+    
+    @Autowired
+    private DiasServiceImp diasService;
 
     @Transactional(readOnly = true)
     public List<DetalleCargaHoraria> findAll(){
@@ -37,12 +40,14 @@ public class DetalleCargaHorariaServiceImp {
     public DetalleCargaHoraria guardarDetalleCargaHoraria(DetalleCargaHorariaDTO detalleCargaHorariaDTO) {
         Optional<Aula> aulaOpt = aulaService.obtenerAula(detalleCargaHorariaDTO.getAulaId());
         Optional<CargaHoraria> cargaHorariaOpt = cargaHorariaService.obtenerCargaHoraria(detalleCargaHorariaDTO.getCargaHorariaId());
+        Optional<Dias> diasOpt = diasService.obtenerDia(detalleCargaHorariaDTO.getDiaId());
         Optional<Grupo> grupoOpt = grupoService.obtenerGrupo(detalleCargaHorariaDTO.getGrupoId());
         DetalleCargaHoraria detalleCargaHoraria = new DetalleCargaHoraria();
         detalleCargaHoraria.setHora_inicio(detalleCargaHorariaDTO.getHora_inicio());
         detalleCargaHoraria.setHora_fin(detalleCargaHorariaDTO.getHora_fin());
         detalleCargaHoraria.setAula(aulaOpt.get());
         detalleCargaHoraria.setCargaHoraria(cargaHorariaOpt.get());
+        detalleCargaHoraria.setDias(diasOpt.get());
         detalleCargaHoraria.setGrupo(grupoOpt.get());
         return repositorio.save(detalleCargaHoraria);
     }
@@ -61,6 +66,7 @@ public class DetalleCargaHorariaServiceImp {
         Optional<DetalleCargaHoraria> detalleCargaHorariaOpt = obtenerDetalleCargaHoraria(id);
         Optional<Aula> aulaOpt = aulaService.obtenerAula(detalleCargaHorariaDTO.getAulaId());
         Optional<CargaHoraria> cargaHorariaOpt = cargaHorariaService.obtenerCargaHoraria(detalleCargaHorariaDTO.getCargaHorariaId());
+        Optional<Dias> diasOpt = diasService.obtenerDia(detalleCargaHorariaDTO.getDiaId());
         Optional<Grupo> grupoOpt = grupoService.obtenerGrupo(detalleCargaHorariaDTO.getGrupoId());
         detalleCargaHorariaDTO.setId(null);
         DetalleCargaHoraria detalleCargaHoraria = detalleCargaHorariaOpt.get();
@@ -68,6 +74,7 @@ public class DetalleCargaHorariaServiceImp {
         detalleCargaHoraria.setHora_fin(detalleCargaHorariaDTO.getHora_fin());
         detalleCargaHoraria.setAula(aulaOpt.get());
         detalleCargaHoraria.setCargaHoraria(cargaHorariaOpt.get());
+        detalleCargaHoraria.setDias(diasOpt.get());
         detalleCargaHoraria.setGrupo(grupoOpt.get());
         return repositorio.save(detalleCargaHoraria);
     }

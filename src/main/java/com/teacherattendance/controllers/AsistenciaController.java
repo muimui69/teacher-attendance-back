@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +29,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/asistencia")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class AsistenciaController {
 	
 	@Autowired
@@ -48,6 +49,7 @@ public class AsistenciaController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Asistencia>>  guardarAsistencia(@Valid  @RequestBody AsistenciaDTO asistenciaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -95,6 +97,7 @@ public class AsistenciaController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Asistencia>> actualizarAsistencia(@PathVariable Long id, 
 			@Valid @RequestBody AsistenciaDTO asistenciaDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -130,6 +133,7 @@ public class AsistenciaController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Void>> eliminarAsistencia(@PathVariable Long id) {
 		try {
 			service.eliminarAsistencia(id);

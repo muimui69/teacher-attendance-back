@@ -9,7 +9,7 @@ import com.teacherattendance.entity.Roles;
 import com.teacherattendance.entity.Usuarios;
 import com.teacherattendance.repository.RolRepository;
 import com.teacherattendance.repository.UserRepository;
-
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -121,7 +121,12 @@ public class UserServiceImp implements UserService {
 	}
 	
 	@Override
+	@Transactional
 	public void deleteUser(Long id) {
-		userRepository.deleteById(id);
+		Usuarios user = obtenerUserPorId(id);
+		user.setActivo(false);
+		user.setCredencialesNoExpiradas(false);
+		user.setCuentaNoBloqueada(false);
+		user.setCuentaNoBloqueada(false);
 	}
 }

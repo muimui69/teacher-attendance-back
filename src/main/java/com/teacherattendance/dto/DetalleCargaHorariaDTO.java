@@ -31,9 +31,11 @@ public class DetalleCargaHorariaDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime hora_fin;
 
-
     @NotNull(message = "El id_carga_horaria del detalle carga horaria no puede ser nulo.")
     private Long cargaHorariaId;
+    
+    @NotNull(message = "El id_dia del detalle carga horaria no puede ser nulo.")
+    private Long diaId;
     
     @NotNull(message = "El id_grupo del detalle carga horaria no puede ser nulo.")
     private Long grupoId;
