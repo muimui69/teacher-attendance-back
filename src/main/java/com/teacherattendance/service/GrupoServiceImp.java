@@ -27,7 +27,9 @@ public class GrupoServiceImp {
 	}
 
 	public Grupo guardarGrupo(GrupoDTO grupoDTO) {
-		Grupo grupo = new Grupo(grupoDTO.getId(), grupoDTO.getNombre());
+		Grupo grupo = new Grupo();
+		grupo.setId(grupoDTO.getId());
+		grupo.setNombre(grupoDTO.getNombre());
 		return repositorio.save(grupo);
 	}
 
@@ -35,7 +37,7 @@ public class GrupoServiceImp {
 		Optional<Grupo> grupoOpt = repositorio.findById(id);
 		if (!grupoOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND,  "No existe el grupo con el id " + id
 			);
 		}
 		return grupoOpt;
@@ -43,7 +45,6 @@ public class GrupoServiceImp {
 
 	public Grupo actualizarGrupo(Long id, GrupoDTO grupoDTO) {
 		Optional<Grupo> grupoOpt = obtenerGrupo(id);
-		grupoDTO.setId(null);
 		Grupo grupo = grupoOpt.get();
 		grupo.setNombre(grupoDTO.getNombre());
 		return repositorio.save(grupo);

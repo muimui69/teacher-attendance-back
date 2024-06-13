@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/detalle_carga_horaria")
+@RequestMapping("/detalle-carga-horaria")
 public class DetalleCargaHorariaController {
 
     @Autowired
@@ -53,6 +54,7 @@ public class DetalleCargaHorariaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<DetalleCargaHoraria>>  guardarDetalleCargaHoraria(@Valid @RequestBody DetalleCargaHorariaDTO detalleCargaHorariaDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
@@ -110,6 +112,7 @@ public class DetalleCargaHorariaController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<DetalleCargaHoraria>> actualizarDetalleCargaHoraria(@PathVariable Long id, @Valid @RequestBody DetalleCargaHorariaDTO detalleCargaHorariaDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -146,6 +149,7 @@ public class DetalleCargaHorariaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> eliminarDetalleCargaHoraria(@PathVariable Long id) {
         try {
             service.eliminarDetalleCargaHoraria(id);

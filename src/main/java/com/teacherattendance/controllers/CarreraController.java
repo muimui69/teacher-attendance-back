@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/carrera")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class CarreraController {
 	
 	@Autowired
@@ -64,6 +63,7 @@ public class CarreraController {
 						.build(),
 				HttpStatus.CREATED
 		);
+
 	}
 
 

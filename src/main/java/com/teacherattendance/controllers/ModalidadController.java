@@ -29,7 +29,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/modalidad")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class ModalidadController {
 	
 	@Autowired

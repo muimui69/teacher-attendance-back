@@ -27,28 +27,24 @@ public class CarreraServiceImp {
 	}
 
 	public Carrera guardarCarrera(CarreraDTO carreraDTO) {
-		Carrera carrera = new Carrera(carreraDTO.getId(), carreraDTO.getNombre());
-		Carrera savedCarrera = repositorio.save(carrera);
-		return savedCarrera;
+		Carrera carrera = new Carrera();
+		carrera.setNombre(carreraDTO.getNombre());
+		carrera.setId(carreraDTO.getId());
+		return repositorio.save(carrera);
 	}
 
 	public Optional<Carrera> obtenerCarrera(Long id) {
 		Optional<Carrera> carreraOpt = repositorio.findById(id);
 		if (!carreraOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND,"No existe la carrera con el id " + id
 			);
 		}
 		return carreraOpt;
 	}
 
 	public Carrera actualizarCarrera(Long id, CarreraDTO carreraDTO) {
-		Optional<Carrera> carreraOpt = repositorio.findById(id);
-		if (!carreraOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Carrera> carreraOpt = obtenerCarrera(id);
 		carreraDTO.setId(null);
 		Carrera carrera = carreraOpt.get();
 		carrera.setNombre(carreraDTO.getNombre());
@@ -57,12 +53,7 @@ public class CarreraServiceImp {
 	}
 
 	public void eliminarCarrera(Long id) {
-		Optional<Carrera> carreraOpt = repositorio.findById(id);
-		if (!carreraOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Carrera> carreraOpt = obtenerCarrera(id);
 		repositorio.delete(carreraOpt.get());
 	}
 

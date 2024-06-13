@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.teacherattendance.dto.AulaDTO;
@@ -39,6 +40,7 @@ public class AulaController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse<Aula>> guardarAula (@Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -96,6 +98,7 @@ public class AulaController {
 	}
 
 	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public  ResponseEntity<ApiResponse<Aula>>actualizarAula(@PathVariable Long id, @Valid @RequestBody AulaDTO aulaDto, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errors = bindingResult.getAllErrors().stream()
@@ -131,6 +134,7 @@ public class AulaController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public  ResponseEntity<ApiResponse<Void>> eliminarAula(@PathVariable Long id) {
 		try {
 			service.eliminarAula(id);

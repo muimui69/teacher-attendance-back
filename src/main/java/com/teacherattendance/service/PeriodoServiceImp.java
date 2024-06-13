@@ -39,21 +39,14 @@ public class PeriodoServiceImp {
 		Optional<Periodo> periodoOpt = repositorio.findById(id);
 		if (!periodoOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe el periodo con el id " + id
 			);
 		}
 		return periodoOpt;
 	}
 
 	public Periodo actualizarPeriodo(Long id, PeriodoDTO periodoDTO){
-		Optional<Periodo> periodoOpt = repositorio.findById(id);
-		if (!periodoOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe el periodo con el id " + id
-			);
-		}
-
-		periodoDTO.setId(null);
+		Optional<Periodo> periodoOpt = obtenerPeriodo(id);
 		Periodo periodo = periodoOpt.get();
 		periodo.setNombre(periodoDTO.getNombre());
 		periodo.setGestion(periodoDTO.getGestion());
@@ -64,12 +57,7 @@ public class PeriodoServiceImp {
 
 
 	public void eliminarPeriodo(Long id) {
-		Optional<Periodo> periodoOpt = repositorio.findById(id);
-		if (!periodoOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Periodo> periodoOpt = obtenerPeriodo(id);
 		repositorio.delete(periodoOpt.get());
 	}
 

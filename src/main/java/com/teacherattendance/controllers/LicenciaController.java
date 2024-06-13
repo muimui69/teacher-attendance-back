@@ -29,7 +29,6 @@ import com.teacherattendance.util.HttpStatusMessage;
 import jakarta.validation.Valid;
 
 @RestController
-// @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/licencia")
 public class LicenciaController {
 	

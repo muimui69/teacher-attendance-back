@@ -53,7 +53,6 @@ public class DetalleCargaHorariaServiceImp {
         Optional<Grupo> grupoOpt = grupoService.obtenerGrupo(detalleCargaHorariaDTO.getGrupoId());
         Optional<Dias> diasOpt = diasService.obtenerDia(detalleCargaHorariaDTO.getDiaId());
 
-
         List<DetalleCargaHoraria> detallesExistentes = repositorio.findByAulaIdAndDiasId(aulaOpt.get().getId(), diasOpt.get().getId());
 
         LocalTime horaInicioNueva = detalleCargaHorariaDTO.getHora_inicio();
@@ -66,7 +65,9 @@ public class DetalleCargaHorariaServiceImp {
 
             if (diaExistente.getId().equals(diasOpt.get().getId())) {
                 if (horaInicioNueva.isBefore(horaFinExistente) && horaFinNueva.isAfter(horaInicioExistente)) {
-                    throw new ResponseStatusException( HttpStatus.BAD_REQUEST,"El horario se superpone con un horario existente.");
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,"El horario se superpone con un horario existente."
+                    );
                 }
             }
         }
@@ -85,7 +86,7 @@ public class DetalleCargaHorariaServiceImp {
         Optional<DetalleCargaHoraria> detalleCargaHorariaOpt = repositorio.findById(id);
         if (!detalleCargaHorariaOpt.isPresent()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+                    HttpStatus.NOT_FOUND, "No existe el detalle de carga horaria con el id " + id
             );
         }
         return detalleCargaHorariaOpt;

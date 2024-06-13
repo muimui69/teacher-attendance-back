@@ -29,7 +29,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/carga-horaria")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class CargaHorariaController {
 	
 	@Autowired
@@ -62,15 +61,26 @@ public class CargaHorariaController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		CargaHoraria cargaHorariaCreado = service.guardarCargaHoraria(cargaHorariaDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<CargaHoraria>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(cargaHorariaCreado)
-						.build(),
-				HttpStatus.CREATED
-		);
+
+		try{
+			CargaHoraria cargaHorariaCreado = service.guardarCargaHoraria(cargaHorariaDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(cargaHorariaCreado)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<CargaHoraria>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 

@@ -29,7 +29,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/materia")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class MateriaController {
 
 	@Autowired
@@ -62,19 +61,29 @@ public class MateriaController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Materia materiaCreada = service.guardarMateria(materiaDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<Materia>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(materiaCreada)
-						.build(),
-				HttpStatus.CREATED
-		);
+		try {
+			Materia materiaCreada = service.guardarMateria(materiaDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Materia>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(materiaCreada)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Materia>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<Materia>>  obtenerMateria(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Materia>> obtenerMateria(@PathVariable Long id) {
 		try {
 			Optional<Materia> materiaOpt = service.obtenerMateria(id);
 			return new ResponseEntity<>(

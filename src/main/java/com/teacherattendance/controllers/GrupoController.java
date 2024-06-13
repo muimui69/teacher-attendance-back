@@ -31,7 +31,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/grupo")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class GrupoController {
 	
 	@Autowired

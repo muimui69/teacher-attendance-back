@@ -36,21 +36,14 @@ public class ModuloServiceImp {
 		Optional<Modulo> moduloOpt = repositorio.findById(id);
 		if (!moduloOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe el modulo con el id " + id
 			);
 		}
 		return moduloOpt;
 	}
 	
 	public Modulo actualizarModulo(Long id, ModuloDTO moduloDTO) {
-		Optional<Modulo> moduloOpt = repositorio.findById(id);
-		if (!moduloOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
-
-		moduloDTO.setId(null);
+		Optional<Modulo> moduloOpt = obtenerModulo(id);
 		Modulo modulo = moduloOpt.get();
 		modulo.setUbicacion(moduloDTO.getUbicacion());
 		modulo.setNumero(moduloDTO.getNumero());
@@ -58,12 +51,7 @@ public class ModuloServiceImp {
 	}
 	
 	public void eliminarModulo(Long id) {
-		Optional<Modulo> moduloOpt = repositorio.findById(id);
-		if (!moduloOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Modulo> moduloOpt = obtenerModulo(id);
 		repositorio.delete(moduloOpt.get());
 	}
 

@@ -24,7 +24,7 @@ public class MateriaServiceImp {
 	private MateriaRepository repositorio;
 
 	@Autowired
-	private CarreraRepository carreraRepository;
+	private CarreraServiceImp carreraService;
 	
 	@Transactional(readOnly = true)
 	public List<Materia> findAll(){
@@ -33,12 +33,7 @@ public class MateriaServiceImp {
 	}
 
 	public Materia guardarMateria(MateriaDTO materiaDTO) {
-		Optional<Carrera> carreraOpt = carreraRepository.findById(materiaDTO.getCarreraId());
-		if (!carreraOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe la carrera con el id " + materiaDTO.getCarreraId()
-			);
-		}
+		Optional<Carrera> carreraOpt = carreraService.obtenerCarrera(materiaDTO.getCarreraId());
 		Materia materia = new Materia();
 		materia.setNombre(materiaDTO.getNombre());
 		materia.setSigla(materiaDTO.getSigla());
@@ -46,34 +41,19 @@ public class MateriaServiceImp {
 		return repositorio.save(materia);
 	}
 
-
-
 	public Optional<Materia> obtenerMateria(Long id) {
-		Optional<Materia> materiaOpt = repositorio.findById(id);
-		if (!materiaOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
-		return materiaOpt;
-	}
-	
-	public Materia actualizarMateria(Long id, MateriaDTO materiaDTO){
 		Optional<Materia> materiaOpt = repositorio.findById(id);
 		if (!materiaOpt.isPresent()) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "No existe la materia con el id " + id
 			);
 		}
-
-		Optional<Carrera> carreraOpt = carreraRepository.findById(materiaDTO.getCarreraId());
-		if (!carreraOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe la carrera con el id " + materiaDTO.getCarreraId()
-			);
-		}
-
-		materiaDTO.setId(null);
+		return materiaOpt;
+	}
+	
+	public Materia actualizarMateria(Long id, MateriaDTO materiaDTO){
+		Optional<Materia> materiaOpt = obtenerMateria(id);
+		Optional<Carrera> carreraOpt = carreraService.obtenerCarrera(materiaDTO.getCarreraId());
 		Materia materia = materiaOpt.get();
 		materia.setNombre(materiaDTO.getNombre());
 		materia.setSigla(materiaDTO.getSigla());
@@ -83,12 +63,7 @@ public class MateriaServiceImp {
 
 
 	public void eliminarMateria(Long id) {
-		Optional<Materia> materiaOpt = repositorio.findById(id);
-		if (!materiaOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Materia> materiaOpt = obtenerMateria(id);
 		repositorio.delete(materiaOpt.get());
 	}
 

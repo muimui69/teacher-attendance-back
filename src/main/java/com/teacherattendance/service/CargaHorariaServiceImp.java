@@ -58,7 +58,7 @@ public class CargaHorariaServiceImp {
 		Optional<CargaHoraria> cargaHoraria = repositorio.findById(id);
 		if (!cargaHoraria.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe la carga horaria con el id " + id
 			);
 		}
 		return cargaHoraria;
@@ -81,7 +81,6 @@ public class CargaHorariaServiceImp {
 	public void eliminarCargaHoraria(Long id) {
 		Optional<CargaHoraria> cargaHorariaOpt = obtenerCargaHoraria(id);
 		repositorio.delete(cargaHorariaOpt.get());
-
 	}
 
 	

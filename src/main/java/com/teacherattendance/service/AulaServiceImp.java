@@ -20,7 +20,7 @@ public class AulaServiceImp {
 	private AulaRepository repositorio;
 
 	@Autowired
-	private ModuloRepository moduloRepository;
+	private ModuloServiceImp moduloService;
 	
 	public List<Aula> findAll(){
 		List<Aula> aulas = repositorio.findAll();
@@ -28,12 +28,7 @@ public class AulaServiceImp {
 	}
 	
 	public Aula guardarAula(AulaDTO aulaDto) {
-		Optional<Modulo> moduloOpt = moduloRepository.findById(aulaDto.getModuloId());
-		if (!moduloOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe el modulo con el id " + aulaDto.getModuloId()
-			);
-		}
+		Optional<Modulo> moduloOpt = moduloService.obtenerModulo(aulaDto.getModuloId());
 		Aula aula = new Aula();
 		aula.setNombre(aulaDto.getNombre());
 		aula.setModulo(moduloOpt.get());
@@ -51,21 +46,8 @@ public class AulaServiceImp {
 	}
 	
 	public Aula actualizarAula(Long id, AulaDTO aulaDto) {
-		Optional<Aula> aulaOpt = repositorio.findById(id);
-		if (!aulaOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND,"No existe el aula con el id " + id
-			);
-		}
-
-		Optional<Modulo> moduloOpt = moduloRepository.findById(aulaDto.getModuloId());
-		if (!moduloOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe el modulo con el id " + aulaDto.getModuloId()
-			);
-		}
-
-		aulaDto.setId(null);
+		Optional<Aula> aulaOpt = obtenerAula(id);
+		Optional<Modulo> moduloOpt = moduloService.obtenerModulo(aulaDto.getModuloId());
 		Aula aula = aulaOpt.get();
 		aula.setNombre(aulaDto.getNombre());
 		aula.setModulo(moduloOpt.get());
@@ -73,12 +55,7 @@ public class AulaServiceImp {
 	}
 	
 	public void eliminarAula(Long id) {
-		Optional<Aula> aulaOpt = repositorio.findById(id);
-		if (!aulaOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, "No existe el aula con el id " + id
-			);
-		}
+		Optional<Aula> aulaOpt = obtenerAula(id);
 		repositorio.delete(aulaOpt.get());
 	}
 

@@ -36,20 +36,14 @@ public class ModalidadServiceImp {
 		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
 		if (!modalidadOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe la modalidad con el id " + id
 			);
 		}
 		return modalidadOpt;
 	}
 	
 	public Modalidad actualizarModalidad(Long id,ModalidadDTO modalidadDTO) {
-		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
-		if (!modalidadOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
-		modalidadDTO.setId(null);
+		Optional<Modalidad> modalidadOpt = obtenerModalidad(id);
 		Modalidad modalidad = modalidadOpt.get();
 		modalidad.setNombre(modalidadDTO.getNombre());
 		modalidad.setDescripcion(modalidadDTO.getDescripcion());
@@ -57,12 +51,7 @@ public class ModalidadServiceImp {
 	}
 	
 	public void eliminarModalidad(Long id) {
-		Optional<Modalidad> modalidadOpt = repositorio.findById(id);
-		if (!modalidadOpt.isPresent()) {
-			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
-			);
-		}
+		Optional<Modalidad> modalidadOpt = obtenerModalidad(id);
 		repositorio.delete(modalidadOpt.get());
 	}
 

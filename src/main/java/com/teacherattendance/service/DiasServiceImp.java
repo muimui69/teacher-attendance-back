@@ -37,7 +37,7 @@ public class DiasServiceImp {
         Optional<Dias> diasOpt = repositorio.findById(id);
         if (!diasOpt.isPresent()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+                    HttpStatus.NOT_FOUND, "No existe el dia con el id " + id
             );
         }
         return diasOpt;

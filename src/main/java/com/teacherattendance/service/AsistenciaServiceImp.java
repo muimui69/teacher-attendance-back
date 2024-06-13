@@ -59,7 +59,6 @@ public class AsistenciaServiceImp {
 			);
 		}
 		Usuarios docente = obtenerUsuarioAutenticado();
-		asistenciaDTO.setId(null);
 		Asistencia asistencia = asistenciaOpt.get();
 		asistencia.setEntrada(asistenciaDTO.getEntrada());
 		asistencia.setSalida(asistenciaDTO.getSalida());

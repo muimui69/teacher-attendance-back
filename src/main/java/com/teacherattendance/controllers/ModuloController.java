@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/modulo")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class ModuloController {
 	
 	@Autowired

@@ -44,7 +44,7 @@ public class LicenciaServiceImp {
 		Optional<Licencia> licenciaOpt = repositorio.findById(id);
 		if (!licenciaOpt.isPresent()) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, HttpStatusMessage.getMessage(HttpStatus.NOT_FOUND)
+					HttpStatus.NOT_FOUND, "No existe la licencia con el id " + id
 			);
 		}
 		return licenciaOpt;
@@ -53,7 +53,6 @@ public class LicenciaServiceImp {
 	public Licencia actualizarLicencia(Long id, LicenciaDTO licenciaDTO) {
 		Optional<Licencia> licenciaOpt = obtenerLicencia(id);
 		Usuarios docente = obtenerUsuarioAutenticado();
-		licenciaDTO.setId(null);
 		Licencia licencia = licenciaOpt.get();
 		licencia.setTitulo(licenciaDTO.getTitulo());
 		licencia.setDescripcion(licenciaDTO.getDescripcion());
