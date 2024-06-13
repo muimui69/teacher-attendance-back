@@ -28,7 +28,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/asistencia")
-// @CrossOrigin(origins = "http://localhost:4200")
 public class AsistenciaController {
 	
 	@Autowired
