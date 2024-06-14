@@ -81,6 +81,43 @@ public class DetalleCargaHorariaServiceImp {
         detalleCargaHoraria.setDias(diasOpt.get());
         return repositorio.save(detalleCargaHoraria);
     }
+//    public DetalleCargaHoraria guardarDetalleCargaHoraria(DetalleCargaHorariaDTO detalleCargaHorariaDTO) {
+//        Optional<Aula> aulaOpt = aulaService.obtenerAula(detalleCargaHorariaDTO.getAulaId());
+//        Optional<CargaHoraria> cargaHorariaOpt = cargaHorariaService.obtenerCargaHoraria(detalleCargaHorariaDTO.getCargaHorariaId());
+//        Optional<Grupo> grupoOpt = grupoService.obtenerGrupo(detalleCargaHorariaDTO.getGrupoId());
+//        Optional<Dias> diasOpt = diasService.obtenerDia(detalleCargaHorariaDTO.getDiaId());
+//
+//        List<DetalleCargaHoraria> detallesExistentes = repositorio.findByAulaIdAndDiasId(aulaOpt.get().getId(), diasOpt.get().getId());
+//
+//        LocalTime horaInicioNueva = detalleCargaHorariaDTO.getHora_inicio();
+//        LocalTime horaFinNueva = detalleCargaHorariaDTO.getHora_fin();
+//        Long docenteId = cargaHorariaOpt.get().getDocente().getId(); // Obtener el ID del docente de la carga horaria nueva
+//
+//        for (DetalleCargaHoraria detalleExistente : detallesExistentes) {
+//            LocalTime horaInicioExistente = detalleExistente.getHora_inicio();
+//            LocalTime horaFinExistente = detalleExistente.getHora_fin();
+//            Dias diaExistente = detalleExistente.getDias();
+//            Long docenteExistenteId = detalleExistente.getCargaHoraria().getDocente().getId(); // Obtener el ID del docente del detalle existente
+//
+//            if (diaExistente.getId().equals(diasOpt.get().getId()) && docenteExistenteId.equals(docenteId)) {
+//                if (horaInicioNueva.isBefore(horaFinExistente) && horaFinNueva.isAfter(horaInicioExistente)) {
+//                    throw new ResponseStatusException(
+//                            HttpStatus.BAD_REQUEST,"El horario se superpone con un horario existente para el mismo docente."
+//                    );
+//                }
+//            }
+//        }
+//
+//        DetalleCargaHoraria detalleCargaHoraria = new DetalleCargaHoraria();
+//        detalleCargaHoraria.setHora_inicio(detalleCargaHorariaDTO.getHora_inicio());
+//        detalleCargaHoraria.setHora_fin(detalleCargaHorariaDTO.getHora_fin());
+//        detalleCargaHoraria.setAula(aulaOpt.get());
+//        detalleCargaHoraria.setCargaHoraria(cargaHorariaOpt.get());
+//        detalleCargaHoraria.setGrupo(grupoOpt.get());
+//        detalleCargaHoraria.setDias(diasOpt.get());
+//        return repositorio.save(detalleCargaHoraria);
+//    }
+
 
     public Optional<DetalleCargaHoraria> obtenerDetalleCargaHoraria(Long id) {
         Optional<DetalleCargaHoraria> detalleCargaHorariaOpt = repositorio.findById(id);

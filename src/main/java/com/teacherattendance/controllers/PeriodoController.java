@@ -53,15 +53,25 @@ public class PeriodoController {
                     HttpStatus.BAD_REQUEST
             );
         }
-        Periodo periodoCreado = service.guardarPeriodo(periodoDTO);
-        return new ResponseEntity<>(
-                ApiResponse.<Periodo>builder()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-                        .data(periodoCreado)
-                        .build(),
-                HttpStatus.CREATED
-        );
+        try {
+            Periodo periodoCreado = service.guardarPeriodo(periodoDTO);
+            return new ResponseEntity<>(
+                    ApiResponse.<Periodo>builder()
+                            .statusCode(HttpStatus.CREATED.value())
+                            .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+                            .data(periodoCreado)
+                            .build(),
+                    HttpStatus.CREATED
+            );
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(
+                    ApiResponse.<Periodo>builder()
+                            .statusCode(e.getStatusCode().value())
+                            .message(e.getReason())
+                            .build(),
+                    e.getStatusCode()
+            );
+        }
     }
 
     @GetMapping("/{id}")

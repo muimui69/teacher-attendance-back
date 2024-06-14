@@ -26,6 +26,12 @@ public class ModalidadServiceImp {
 	}
 	
 	public Modalidad guardarModalidad(ModalidadDTO modalidadDTO) {
+		Optional<Modalidad> modalidadExistente = repositorio.findByNombre(modalidadDTO.getNombre());
+		if (modalidadExistente.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND,"La modalidad con el nombre " + modalidadDTO.getNombre() + " ya existe."
+			);
+		}
 		Modalidad modalidad = new Modalidad();
 		modalidad.setNombre(modalidadDTO.getNombre());
 		modalidad.setDescripcion(modalidadDTO.getDescripcion());

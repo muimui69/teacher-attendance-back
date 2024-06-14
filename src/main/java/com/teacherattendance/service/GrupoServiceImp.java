@@ -3,6 +3,7 @@ package com.teacherattendance.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.teacherattendance.entity.Carrera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,12 @@ public class GrupoServiceImp {
 	}
 
 	public Grupo guardarGrupo(GrupoDTO grupoDTO) {
+		Optional<Grupo> grupoExistente = repositorio.findByNombre(grupoDTO.getNombre());
+		if (grupoExistente.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND,"La grupo con el nombre " + grupoDTO.getNombre() + " ya existe."
+			);
+		}
 		Grupo grupo = new Grupo();
 		grupo.setId(grupoDTO.getId());
 		grupo.setNombre(grupoDTO.getNombre());

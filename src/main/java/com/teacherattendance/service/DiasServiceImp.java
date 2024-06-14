@@ -2,6 +2,7 @@ package com.teacherattendance.service;
 
 import com.teacherattendance.dto.DiasDTO;
 import com.teacherattendance.dto.ModuloDTO;
+import com.teacherattendance.entity.Carrera;
 import com.teacherattendance.entity.Dias;
 import com.teacherattendance.entity.Modulo;
 import com.teacherattendance.repository.DiasRepository;
@@ -28,6 +29,12 @@ public class DiasServiceImp {
     }
 
     public Dias guardarDia(DiasDTO diasDTO) {
+        Optional<Dias> diaExistente = repositorio.findByNombre(diasDTO.getNombre());
+        if (diaExistente.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,"El dia con el nombre " + diasDTO.getNombre() + " ya existe."
+            );
+        }
         Dias dias = new Dias();
         dias.setNombre(diasDTO.getNombre());
         return repositorio.save(dias);

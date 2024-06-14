@@ -54,16 +54,25 @@ public class CarreraController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Carrera carreraCreada = service.guardarCarrera(carreraDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<Carrera>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(carreraCreada)
-						.build(),
-				HttpStatus.CREATED
-		);
-
+		try {
+			Carrera carreraCreada = service.guardarCarrera(carreraDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Carrera>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(carreraCreada)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Carrera>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 

@@ -52,15 +52,25 @@ public class ModuloController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Modulo moduloCreado = service.guardarModulo(moduloDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<Modulo>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(moduloCreado)
-						.build(),
-				HttpStatus.CREATED
-		);
+		try {
+			Modulo moduloCreado = service.guardarModulo(moduloDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(moduloCreado)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Modulo>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@GetMapping("/{id}")

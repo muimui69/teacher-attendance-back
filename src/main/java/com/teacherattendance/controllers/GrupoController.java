@@ -64,15 +64,25 @@ public class GrupoController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Grupo grupoCreado = service.guardarGrupo(grupoDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<Grupo>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(grupoCreado)
-						.build(),
-				HttpStatus.CREATED
-		);
+		try {
+			Grupo grupoCreado = service.guardarGrupo(grupoDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Grupo>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(grupoCreado)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Grupo>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 

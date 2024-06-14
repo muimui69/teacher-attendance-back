@@ -61,15 +61,25 @@ public class ModalidadController {
 					HttpStatus.BAD_REQUEST
 			);
 		}
-		Modalidad modalidadCreada = service.guardarModalidad(modalidadDTO);
-		return new ResponseEntity<>(
-				ApiResponse.<Modalidad>builder()
-						.statusCode(HttpStatus.CREATED.value())
-						.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-						.data(modalidadCreada)
-						.build(),
-				HttpStatus.CREATED
-		);
+		try {
+			Modalidad modalidadCreada = service.guardarModalidad(modalidadDTO);
+			return new ResponseEntity<>(
+					ApiResponse.<Modalidad>builder()
+							.statusCode(HttpStatus.CREATED.value())
+							.message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+							.data(modalidadCreada)
+							.build(),
+					HttpStatus.CREATED
+			);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(
+					ApiResponse.<Modalidad>builder()
+							.statusCode(e.getStatusCode().value())
+							.message(e.getReason())
+							.build(),
+					e.getStatusCode()
+			);
+		}
 	}
 
 	@GetMapping("/{id}")

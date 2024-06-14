@@ -54,15 +54,25 @@ public class DiasController {
                     HttpStatus.BAD_REQUEST
             );
         }
-        Dias diaCreado = service.guardarDia(diasDTO);
-        return new ResponseEntity<>(
-                ApiResponse.<Dias>builder()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
-                        .data(diaCreado)
-                        .build(),
-                HttpStatus.CREATED
-        );
+        try {
+            Dias diaCreado = service.guardarDia(diasDTO);
+            return new ResponseEntity<>(
+                    ApiResponse.<Dias>builder()
+                            .statusCode(HttpStatus.CREATED.value())
+                            .message(HttpStatusMessage.getMessage(HttpStatus.CREATED))
+                            .data(diaCreado)
+                            .build(),
+                    HttpStatus.CREATED
+            );
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(
+                    ApiResponse.<Dias>builder()
+                            .statusCode(e.getStatusCode().value())
+                            .message(e.getReason())
+                            .build(),
+                    e.getStatusCode()
+            );
+        }
     }
 
     @GetMapping("/{id}")

@@ -27,6 +27,12 @@ public class CarreraServiceImp {
 	}
 
 	public Carrera guardarCarrera(CarreraDTO carreraDTO) {
+		Optional<Carrera> carreraExistente = repositorio.findByNombre(carreraDTO.getNombre());
+		if (carreraExistente.isPresent()) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND,"La carrera con el nombre " + carreraDTO.getNombre() + " ya existe."
+			);
+		}
 		Carrera carrera = new Carrera();
 		carrera.setNombre(carreraDTO.getNombre());
 		carrera.setId(carreraDTO.getId());
